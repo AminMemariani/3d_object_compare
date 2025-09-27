@@ -1,0 +1,117 @@
+# 3D Object Viewer - Release Configuration
+# This file contains configuration for building release versions
+
+app:
+  name: "3D Object Viewer"
+  version: "1.0.0"
+  build_number: 1
+  description: "Professional 3D model comparison tool with Procrustes analysis"
+  
+build:
+  # Build configurations for each platform
+  web:
+    renderer: "html"  # html or canvaskit
+    base_href: "/"
+    tree_shake_icons: true
+    
+  android:
+    target_sdk_version: 34
+    min_sdk_version: 21
+    build_type: "apk"  # apk or appbundle
+    enable_proguard: true
+    
+  ios:
+    deployment_target: "12.0"
+    build_mode: "release"
+    no_codesign: true  # Set to false for App Store builds
+    
+  windows:
+    build_mode: "release"
+    target_platform: "windows-x64"
+    
+  macos:
+    build_mode: "release"
+    target_platform: "darwin-x64"
+    
+  linux:
+    build_mode: "release"
+    target_platform: "linux-x64"
+
+# Code signing (update with your certificates)
+signing:
+  android:
+    keystore_path: "android/app/upload-keystore.jks"
+    keystore_password: ""
+    key_alias: ""
+    key_password: ""
+    
+  ios:
+    team_id: ""
+    provisioning_profile: ""
+    
+  macos:
+    team_id: ""
+    provisioning_profile: ""
+
+# Release notes
+release_notes:
+  version_1_0_0: |
+    Initial release of 3D Object Viewer
+    
+    Features:
+    - Load and view 3D objects (.obj, .stl formats)
+    - Interactive 3D navigation with gesture controls
+    - Procrustes superimposition analysis
+    - Detailed similarity metrics and reporting
+    - Export results as JSON/CSV
+    - Cross-platform support (Web, Desktop, Mobile)
+    - Tutorial system for new users
+    - Advanced 3D visualization tools
+    
+    Technical improvements:
+    - Clean architecture with MVVM pattern
+    - Dependency injection with GetIt
+    - Local storage with Isar database
+    - Background processing with isolates
+    - Material 3 design system
+    - Responsive UI with animated transitions
+
+# Deployment targets
+deployment:
+  web:
+    provider: "github-pages"  # github-pages, firebase, netlify, vercel
+    domain: "3d-object-viewer.github.io"
+    
+  android:
+    store: "google-play"  # google-play, amazon, fdroid
+    package_name: "com.yourcompany.threedobjectviewer"
+    
+  ios:
+    store: "app-store"  # app-store, testflight
+    bundle_id: "com.yourcompany.threedobjectviewer"
+    
+  desktop:
+    distribution: "direct"  # direct, github-releases, snap, homebrew
+    
+# CI/CD configuration
+ci_cd:
+  github_actions:
+    enabled: true
+    workflows:
+      - build_and_test
+      - release_web
+      - release_mobile
+      - release_desktop
+      
+  build_matrix:
+    platforms:
+      - ubuntu-latest
+      - windows-latest
+      - macos-latest
+      
+# Quality gates
+quality_gates:
+  test_coverage_threshold: 80
+  code_analysis: "strict"
+  performance_tests: true
+  security_scan: true
