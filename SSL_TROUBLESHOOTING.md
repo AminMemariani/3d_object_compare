@@ -58,10 +58,9 @@ May return certificate error initially.
 
 ### **Required Settings:**
 1. **Repository Settings** → **Pages**
-2. **Source**: Deploy from a branch
-3. **Branch**: `gh-pages`
-4. **Custom domain**: `object-compare.aminmemariani.github.io`
-5. **Enforce HTTPS**: ✅ (when available)
+2. **Source**: GitHub Actions
+3. **Custom domain**: `object-compare.aminmemariani.github.io`
+4. **Enforce HTTPS**: ✅ (when available)
 
 ### **If Enforce HTTPS is Grayed Out:**
 - This is normal during certificate provisioning

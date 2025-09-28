@@ -46,9 +46,7 @@ python3 -m http.server 8000
 ### GitHub Pages Settings:
 1. Go to your repository Settings
 2. Navigate to Pages section
-3. Source: Deploy from a branch
-4. Branch: gh-pages
-5. Folder: / (root)
+3. Source: GitHub Actions
 
 ### Custom Subdomain:
 The app is configured for the subdomain `object-compare.aminmemariani.github.io`:

@@ -37,9 +37,7 @@ git push origin main
 2. Click **Settings** tab
 3. Scroll to **Pages** section
 4. Configure:
-   - **Source**: Deploy from a branch
-   - **Branch**: `gh-pages`
-   - **Folder**: `/ (root)`
+   - **Source**: GitHub Actions
 5. Click **Save**
 
 ### 3. Monitor Deployment
@@ -63,7 +61,7 @@ Once deployed, your app will be available at:
 - **Flutter Version**: 3.32.6
 - **Build Command**: `flutter build web --release`
 - **Output Directory**: `build/web`
-- **Deployment Branch**: `gh-pages`
+- **Deployment Method**: GitHub Actions
 
 ### Automatic Deployment
 - **Trigger**: Push to `main` branch
@@ -101,6 +99,7 @@ python3 -m http.server 8000
 
 ### GitHub Pages
 - **Location**: Repository → Settings → Pages
+- **Source**: GitHub Actions
 - **Status**: Shows deployment status
 - **Custom Domain**: Shows `object-compare.aminmemariani.github.io`
 
@@ -110,8 +109,8 @@ python3 -m http.server 8000
 
 1. **404 Error**
    - Check if CNAME file exists
-   - Verify GitHub Pages settings
-   - Ensure gh-pages branch exists
+   - Verify GitHub Pages settings (Source: GitHub Actions)
+   - Ensure GitHub Actions workflow has run successfully
 
 2. **Build Fails**
    - Check Flutter version compatibility
@@ -126,6 +125,7 @@ python3 -m http.server 8000
 4. **Subdomain Not Working**
    - Verify CNAME file content
    - Check GitHub Pages custom domain settings
+   - Ensure GitHub Actions deployment completed successfully
    - Wait for DNS propagation (up to 24 hours)
 
 ### Debug Steps
