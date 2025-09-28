@@ -299,4 +299,33 @@ class ObjectViewModel extends BaseViewModel with AsyncOperationMixin {
     clearError();
     notifyListeners();
   }
+
+  // Test helper methods (only for testing)
+  void setObjectAForTesting(Object3D? object) {
+    _objectA = object;
+    notifyListeners();
+  }
+
+  void setObjectBForTesting(Object3D? object) {
+    _objectB = object;
+    notifyListeners();
+  }
+
+  void setProcrustesResultForTesting(ProcrustesResult? result) {
+    _procrustesResult = result;
+    notifyListeners();
+  }
+
+  void setShowResultsCardForTesting(bool show) {
+    _showResultsCard = show;
+    notifyListeners();
+  }
+
+  List<ObjectTransform> getTransformHistoryForTesting() => _transformHistory;
+  int getHistoryIndexForTesting() => _historyIndex;
+
+  void addToTransformHistoryForTesting(ObjectTransform transform) {
+    _transformHistory.add(transform);
+    _historyIndex = _transformHistory.length - 1;
+  }
 }

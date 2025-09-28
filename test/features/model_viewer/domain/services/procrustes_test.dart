@@ -147,16 +147,12 @@ void main() {
           translation: Vector3(5, 5, 5),
           rotation: Matrix3.identity(),
           scale: 2.0,
-          metrics: ProcrustesMetrics(
-            similarityScore: 90.0,
-            minimumDistance: 0.1,
-            standardDeviation: 0.05,
-            rootMeanSquareError: 0.15,
-            meanDistance: 0.1,
-            maxDistance: 0.2,
-            numberOfPoints: 8,
-          ),
+          similarityScore: 90.0,
+          minimumDistance: 0.1,
+          standardDeviation: 0.05,
+          rootMeanSquareError: 0.15,
           numberOfPoints: 8,
+          computedAt: DateTime.now(),
         );
 
         // Act
@@ -181,16 +177,12 @@ void main() {
           translation: Vector3.zero(),
           rotation: Matrix3.identity(),
           scale: 1.0,
-          metrics: ProcrustesMetrics(
-            similarityScore: 100.0,
-            minimumDistance: 0.0,
-            standardDeviation: 0.0,
-            rootMeanSquareError: 0.0,
-            meanDistance: 0.0,
-            maxDistance: 0.0,
-            numberOfPoints: 8,
-          ),
+          similarityScore: 100.0,
+          minimumDistance: 0.0,
+          standardDeviation: 0.0,
+          rootMeanSquareError: 0.0,
           numberOfPoints: 8,
+          computedAt: DateTime.now(),
         );
 
         // Act
@@ -245,113 +237,7 @@ void main() {
       });
     });
 
-    group('_generateObjectPoints', () {
-      test('should generate points for object', () {
-        // Act
-        final points = Procrustes._generateObjectPoints(objectA);
-
-        // Assert
-        expect(points, isA<List<Vector3>>());
-        expect(points.length, equals(8)); // Cube has 8 vertices
-        expect(points.every((p) => p is Vector3), isTrue);
-      });
-
-      test('should apply object transformations', () {
-        // Arrange
-        final transformedObject = objectA.copyWith(
-          position: Vector3(10, 20, 30),
-          scale: Vector3(2, 2, 2),
-        );
-
-        // Act
-        final points = Procrustes._generateObjectPoints(transformedObject);
-
-        // Assert
-        expect(points.length, equals(8));
-        // Points should be transformed according to object properties
-        expect(points.every((p) => p is Vector3), isTrue);
-      });
-    });
-
-    group('_eulerToMatrix', () {
-      test('should convert zero rotation to identity matrix', () {
-        // Arrange
-        final zeroRotation = Vector3(0, 0, 0);
-
-        // Act
-        final matrix = Procrustes._eulerToMatrix(zeroRotation);
-
-        // Assert
-        expect(matrix.entry(0, 0), closeTo(1.0, 0.001));
-        expect(matrix.entry(1, 1), closeTo(1.0, 0.001));
-        expect(matrix.entry(2, 2), closeTo(1.0, 0.001));
-        expect(matrix.determinant(), closeTo(1.0, 0.001));
-      });
-
-      test('should convert 90-degree rotation', () {
-        // Arrange
-        final rotation = Vector3(0, 90, 0);
-
-        // Act
-        final matrix = Procrustes._eulerToMatrix(rotation);
-
-        // Assert
-        expect(matrix.determinant(), closeTo(1.0, 0.001));
-      });
-    });
-
-    group('_matrixToEuler', () {
-      test('should convert identity matrix to zero rotation', () {
-        // Arrange
-        final identityMatrix = Matrix3.identity();
-
-        // Act
-        final euler = Procrustes._matrixToEuler(identityMatrix);
-
-        // Assert
-        expect(euler.x, closeTo(0.0, 0.1));
-        expect(euler.y, closeTo(0.0, 0.1));
-        expect(euler.z, closeTo(0.0, 0.1));
-      });
-
-      test('should handle rotation matrix', () {
-        // Arrange
-        final rotationMatrix = Matrix3.rotationY(radians(45));
-
-        // Act
-        final euler = Procrustes._matrixToEuler(rotationMatrix);
-
-        // Assert
-        expect(euler, isA<Vector3>());
-      });
-    });
-
-    group('_rotateVector', () {
-      test('should rotate vector by Euler angles', () {
-        // Arrange
-        final vector = Vector3(1, 0, 0);
-        final rotation = Vector3(0, 90, 0);
-
-        // Act
-        final rotatedVector = Procrustes._rotateVector(vector, rotation);
-
-        // Assert
-        expect(rotatedVector, isA<Vector3>());
-        expect(rotatedVector.length, closeTo(vector.length, 0.001));
-      });
-
-      test('should preserve vector magnitude', () {
-        // Arrange
-        final vector = Vector3(3, 4, 5);
-        final rotation = Vector3(30, 45, 60);
-
-        // Act
-        final rotatedVector = Procrustes._rotateVector(vector, rotation);
-
-        // Assert
-        expect(rotatedVector.length, closeTo(vector.length, 0.001));
-      });
-    });
+    // Note: Private method tests removed as they are not accessible from tests
 
     group('edge cases', () {
       test('should handle objects with extreme values', () {

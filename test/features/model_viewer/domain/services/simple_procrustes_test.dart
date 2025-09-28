@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:flutter_3d_app/features/model_viewer/domain/services/procrustes_analysis.dart';
-import 'package:flutter_3d_app/features/model_viewer/domain/entities/procrustes_result.dart';
 
 void main() {
   group('ProcrustesAnalysis - Simple Tests', () {

@@ -48,16 +48,12 @@ class MockProcrustesService implements ProcrustesServiceInterface {
       translation: Vector3.zero(),
       rotation: Matrix3.identity(),
       scale: 1.0,
-      metrics: ProcrustesMetrics(
-        similarityScore: 85.0,
-        minimumDistance: 0.1,
-        standardDeviation: 0.05,
-        rootMeanSquareError: 0.15,
-        meanDistance: 0.1,
-        maxDistance: 0.2,
-        numberOfPoints: 8,
-      ),
+      similarityScore: 85.0,
+      minimumDistance: 0.1,
+      standardDeviation: 0.05,
+      rootMeanSquareError: 0.15,
       numberOfPoints: 8,
+      computedAt: DateTime.now(),
     );
   }
 
@@ -76,16 +72,12 @@ class MockProcrustesService implements ProcrustesServiceInterface {
       translation: Vector3.zero(),
       rotation: Matrix3.identity(),
       scale: 1.0,
-      metrics: ProcrustesMetrics(
-        similarityScore: 90.0,
-        minimumDistance: 0.05,
-        standardDeviation: 0.03,
-        rootMeanSquareError: 0.08,
-        meanDistance: 0.05,
-        maxDistance: 0.1,
-        numberOfPoints: pointsA.length,
-      ),
+      similarityScore: 90.0,
+      minimumDistance: 0.05,
+      standardDeviation: 0.03,
+      rootMeanSquareError: 0.08,
       numberOfPoints: pointsA.length,
+      computedAt: DateTime.now(),
     );
   }
 

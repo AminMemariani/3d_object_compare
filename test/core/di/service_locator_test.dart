@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_3d_app/core/di/service_locator.dart';
 import 'package:flutter_3d_app/features/model_viewer/domain/services/interfaces/procrustes_service_interface.dart';
 import 'package:flutter_3d_app/features/model_viewer/domain/services/implementations/procrustes_service_impl.dart';
-import 'package:flutter_3d_app/test/features/model_viewer/domain/services/mocks/mock_procrustes_service.dart';
+import 'package:flutter_3d_app/features/model_viewer/domain/services/mocks/mock_procrustes_service.dart';
 
 void main() {
   group('ServiceLocator', () {
