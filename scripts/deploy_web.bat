@@ -38,7 +38,7 @@ echo.
 echo 🌐 To deploy to GitHub Pages:
 echo 1. Push your changes to the main branch
 echo 2. GitHub Actions will automatically build and deploy
-echo 3. Your app will be available at: https://object-compare.aminmemariani.github.io
+echo 3. Your app will be available at: https://aminmemariani.github.io/3d_object_compare
 echo.
 echo 🔧 For local testing, you can serve the built app with:
 echo    cd build\web ^&^& python -m http.server 8000
