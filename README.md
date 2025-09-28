@@ -110,6 +110,8 @@ Each feature follows the clean architecture pattern:
 
 **Try the app online**: [https://object-compare.aminmemariani.github.io](https://object-compare.aminmemariani.github.io)
 
+> **Note**: If you see a 404 error, the deployment is in progress. Please wait 2-3 minutes for GitHub Actions to complete the build and deployment.
+
 The web version is automatically deployed to GitHub Pages and includes all core features for 3D object comparison and analysis.
 
 ### Web Deployment
