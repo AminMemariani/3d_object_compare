@@ -57,7 +57,7 @@ void main() {
       // Act & Assert
       expect(
         () => ServiceLocator.get<ProcrustesServiceInterface>(),
-        throwsA(isA<Exception>()),
+        throwsA(isA<StateError>()),
       );
     });
 
@@ -87,7 +87,7 @@ void main() {
       // Act
       ServiceLocator.reset();
 
-      // Assert
+      // Assert - Check that the service is unregistered
       expect(
         ServiceLocator.isRegistered<ProcrustesServiceInterface>(),
         isFalse,

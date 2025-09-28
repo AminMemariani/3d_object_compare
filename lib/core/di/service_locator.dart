@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import '../../features/model_viewer/domain/services/interfaces/procrustes_service_interface.dart';
 import '../../features/model_viewer/domain/services/implementations/procrustes_service_impl.dart';
+import '../../features/model_viewer/domain/services/mocks/mock_procrustes_service.dart';
 import '../../features/model_viewer/domain/services/implementations/object_loader_service_impl.dart';
 import '../../features/model_viewer/domain/services/implementations/export_service_impl.dart';
 
@@ -67,10 +68,9 @@ class ServiceLocator {
     // Clear existing registrations
     _getIt.reset();
 
-    // Note: Mock services would be registered here in a real implementation
-    // For now, we'll use the actual implementations
+    // Register mock services for testing
     _getIt.registerLazySingleton<ProcrustesServiceInterface>(
-      () => ProcrustesServiceImpl(),
+      () => MockProcrustesService(),
     );
 
     _getIt.registerFactory<ObjectLoaderServiceInterface>(
@@ -78,6 +78,9 @@ class ServiceLocator {
     );
 
     _getIt.registerFactory<ExportServiceInterface>(() => ExportServiceImpl());
+
+    // Note: UserPreferencesProvider registration removed for now to avoid compilation errors
+    // This can be added back when proper mock repositories are created
   }
 
   /// Registers a service with a specific implementation
