@@ -6,7 +6,7 @@
 [![Tests](https://img.shields.io/badge/Tests-76%2F78%20passing-green.svg)](https://github.com/AminMemariani/3d_object_compare/actions)
 [![License](https://img.shields.io/badge/License-GPL%20v3.0-red.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20Mobile%20%7C%20Desktop-lightgrey.svg)](https://flutter.dev/)
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen.svg)](https://aminmemariani.github.io/3d_object_compare)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen.svg)](https://object-compare.aminmemariani.github.io)
 
 A professional-grade Flutter application designed to help researchers, professionals, and developers in **geology**, **gaming**, and **medical fields** compare and analyze 3D objects with advanced Procrustes analysis. Built with clean architecture principles and supporting all major platforms.
 
@@ -108,7 +108,7 @@ Each feature follows the clean architecture pattern:
 
 ## 🌐 Live Demo
 
-**Try the app online**: [https://aminmemariani.github.io/3d_object_compare](https://aminmemariani.github.io/3d_object_compare)
+**Try the app online**: [https://object-compare.aminmemariani.github.io](https://object-compare.aminmemariani.github.io)
 
 The web version is automatically deployed to GitHub Pages and includes all core features for 3D object comparison and analysis.
 

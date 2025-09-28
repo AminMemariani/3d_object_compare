@@ -50,10 +50,10 @@ python3 -m http.server 8000
 4. Branch: gh-pages
 5. Folder: / (root)
 
-### Custom Domain (Optional):
-If you have a custom domain, add it to the workflow file:
+### Custom Subdomain:
+The app is configured for the subdomain `object-compare.aminmemariani.github.io`:
 ```yaml
-cname: your-domain.com
+cname: object-compare.aminmemariani.github.io
 ```
 
 ## Troubleshooting
