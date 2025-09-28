@@ -3,9 +3,10 @@
 [![CI/CD](https://github.com/AminMemariani/3d_object_compare/workflows/Build%20and%20Test/badge.svg)](https://github.com/AminMemariani/3d_object_compare/actions)
 [![Flutter](https://img.shields.io/badge/Flutter-3.32.6-blue.svg)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-3.8.1-blue.svg)](https://dart.dev/)
-[![Tests](https://img.shields.io/badge/Tests-69%2F78%20passing-green.svg)](https://github.com/AminMemariani/3d_object_compare/actions)
+[![Tests](https://img.shields.io/badge/Tests-76%2F78%20passing-green.svg)](https://github.com/AminMemariani/3d_object_compare/actions)
 [![License](https://img.shields.io/badge/License-GPL%20v3.0-red.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20Mobile%20%7C%20Desktop-lightgrey.svg)](https://flutter.dev/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen.svg)](https://aminmemariani.github.io/3d_object_compare)
 
 A professional-grade Flutter application designed to help researchers, professionals, and developers in **geology**, **gaming**, and **medical fields** compare and analyze 3D objects with advanced Procrustes analysis. Built with clean architecture principles and supporting all major platforms.
 
@@ -104,6 +105,25 @@ Each feature follows the clean architecture pattern:
 ### Utilities
 - `path_provider`: File system access
 - `shared_preferences`: Simple key-value storage
+
+## 🌐 Live Demo
+
+**Try the app online**: [https://aminmemariani.github.io/3d_object_compare](https://aminmemariani.github.io/3d_object_compare)
+
+The web version is automatically deployed to GitHub Pages and includes all core features for 3D object comparison and analysis.
+
+### Web Deployment
+The app is automatically deployed to GitHub Pages using GitHub Actions. To deploy manually:
+
+```bash
+# Using the deployment script
+./scripts/deploy_web.sh
+
+# Or manually
+flutter build web --release
+```
+
+For detailed deployment instructions, see [docs/README.md](docs/README.md).
 
 ## Getting Started
 
