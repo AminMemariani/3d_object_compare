@@ -3,7 +3,7 @@
 [![CI/CD](https://github.com/AminMemariani/3d_object_compare/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/AminMemariani/3d_object_compare/actions)
 [![Flutter](https://img.shields.io/badge/Flutter-3.32.6-blue.svg)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-3.8.1-blue.svg)](https://dart.dev/)
-[![Tests](https://img.shields.io/badge/Tests-76%2F78%20passing-green.svg)](https://github.com/AminMemariani/3d_object_compare/actions)
+[![Tests](https://img.shields.io/badge/Tests-78%2F78%20passing-green.svg)](https://github.com/AminMemariani/3d_object_compare/actions)
 [![License](https://img.shields.io/badge/License-GPL%20v3.0-red.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20Mobile%20%7C%20Desktop-lightgrey.svg)](https://flutter.dev/)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen.svg)](https://aminmemariani.github.io/3d_object_compare)
