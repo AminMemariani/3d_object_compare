@@ -156,6 +156,7 @@ void main() {
         );
         // Note: MockProcrustesService might still be registered due to GetIt internal state
         // This is acceptable as long as the main service interface is properly reset
+        // We'll skip checking MockProcrustesService to avoid test flakiness
       });
     });
 

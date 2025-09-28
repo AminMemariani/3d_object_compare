@@ -87,11 +87,13 @@ void main() {
       // Act
       ServiceLocator.reset();
 
-      // Assert - Check that the service is unregistered
-      expect(
-        ServiceLocator.isRegistered<ProcrustesServiceInterface>(),
-        isFalse,
-      );
+        // Assert - Check that the service is unregistered
+        expect(
+          ServiceLocator.isRegistered<ProcrustesServiceInterface>(),
+          isFalse,
+        );
+        // Note: Some services might still be registered due to GetIt internal state
+        // This is acceptable as long as the main service interface is properly reset
     });
   });
 
