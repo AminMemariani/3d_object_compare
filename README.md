@@ -1,6 +1,6 @@
 # 3D Object Comparison Tool
 
-[![CI/CD](https://github.com/AminMemariani/3d_object_compare/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/AminMemariani/3d_object_compare/actions)
+[![CI/CD](https://github.com/AminMemariani/3d_object_compare/workflows/Deploy%20Flutter%20Web%20to%20GitHub%20Pages/badge.svg)](https://github.com/AminMemariani/3d_object_compare/actions)
 [![Flutter](https://img.shields.io/badge/Flutter-3.32.6-blue.svg)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-3.8.1-blue.svg)](https://dart.dev/)
 [![Tests](https://img.shields.io/badge/Tests-78%2F78%20passing-green.svg)](https://github.com/AminMemariani/3d_object_compare/actions)

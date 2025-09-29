@@ -39,7 +39,7 @@ jobs:
       run: flutter test || echo "Some tests failed, but continuing with deployment"
       
     - name: Build web app
-      run: flutter build web --release
+      run: flutter build web --release --base-href /3d_object_compare/
       
     - name: Setup Pages
       if: github.ref == 'refs/heads/main'
