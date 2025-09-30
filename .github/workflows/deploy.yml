@@ -44,19 +44,6 @@ jobs:
     - name: Add .nojekyll
       run: touch build/web/.nojekyll
 
-    - name: Add SPA 404 redirect for deep links
-      run: |
-        cat > build/web/404.html << 'EOF'
-        <!DOCTYPE html>
-        <html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=/3d_object_compare/#${window.location.pathname.replace('/3d_object_compare','')}${window.location.search}${window.location.hash}"></head><body></body></html>
-        <script>
-        (function(){
-          var path = window.location.pathname.replace('/3d_object_compare','');
-          var target = '/3d_object_compare/#' + path + window.location.search + window.location.hash;
-          window.location.replace(target);
-        })();
-        </script>
-        EOF
     - name: Add SPA 404 fallback
       run: cp build/web/index.html build/web/404.html
       
