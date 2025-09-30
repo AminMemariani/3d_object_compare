@@ -241,7 +241,7 @@ class _SuperimposedViewerPageState extends State<SuperimposedViewerPage>
       decoration: BoxDecoration(
         border: Border.all(
           color: object.color.red > 0.5 ? Colors.red : Colors.blue,
-          width: 2,
+          width: 3,
         ),
         borderRadius: BorderRadius.circular(20),
       ),
@@ -252,11 +252,23 @@ class _SuperimposedViewerPageState extends State<SuperimposedViewerPage>
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: Color.fromRGBO(
-                (object.color.red * 255).round(),
-                (object.color.green * 255).round(),
-                (object.color.blue * 255).round(),
-                object.opacity,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color.fromRGBO(
+                    (object.color.red * 255).round(),
+                    (object.color.green * 255).round(),
+                    (object.color.blue * 255).round(),
+                    object.opacity * 0.3,
+                  ),
+                  Color.fromRGBO(
+                    (object.color.red * 255).round(),
+                    (object.color.green * 255).round(),
+                    (object.color.blue * 255).round(),
+                    object.opacity * 0.6,
+                  ),
+                ],
               ),
               borderRadius: BorderRadius.circular(18),
             ),
@@ -264,20 +276,80 @@ class _SuperimposedViewerPageState extends State<SuperimposedViewerPage>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.view_in_ar_rounded, size: 48, color: Colors.white),
-                  const SizedBox(height: 8),
-                  Text(
-                    label,
-                    style: const TextStyle(
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.view_in_ar_rounded,
+                      size: 64,
                       color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    object.name,
-                    style: const TextStyle(color: Colors.white70, fontSize: 12),
-                    textAlign: TextAlign.center,
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          label,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          object.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.check_circle, color: Colors.greenAccent, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Loaded',
+                              style: const TextStyle(
+                                color: Colors.greenAccent,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Note: Visual 3D rendering coming soon.\nObject data is loaded and ready for analysis.',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 11,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ],
               ),
