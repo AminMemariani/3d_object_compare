@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../model_viewer/presentation/providers/model_viewer_provider.dart';
+import '../../../model_viewer/presentation/providers/object_provider.dart';
 import '../../../model_viewer/domain/entities/model_3d.dart';
 import '../../../tutorial/presentation/widgets/tutorial_button.dart';
 import '../../../tutorial/presentation/widgets/tutorial_overlay.dart';
@@ -435,44 +436,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  void _loadObjectA(BuildContext context) {
-    final modelViewerProvider = Provider.of<ModelViewerProvider>(
+  Future<void> _loadObjectA(BuildContext context) async {
+    final objectProvider = Provider.of<ObjectProvider>(
       context,
       listen: false,
     );
 
-    final objectA = Model3D(
-      id: 'object_a',
-      name: 'Object A - Astronaut',
-      path: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
-      scale: 1.0,
-      autoRotate: true,
-      backgroundColor: '#FFFFFF',
-      createdAt: DateTime.now(),
-    );
-
-    modelViewerProvider.loadModel(objectA);
-    _showSuccessMessage(context, 'Object A loaded successfully!');
+    await objectProvider.loadObjectA();
+    
+    if (objectProvider.error != null) {
+      _showErrorMessage(context, objectProvider.error!);
+    } else if (objectProvider.hasObjectA) {
+      _showSuccessMessage(context, 'Object A loaded successfully!');
+      // Navigate to viewer to show the object
+      Navigator.of(context).pushNamed('/superimposed-viewer');
+    }
   }
 
-  void _loadObjectB(BuildContext context) {
-    final modelViewerProvider = Provider.of<ModelViewerProvider>(
+  Future<void> _loadObjectB(BuildContext context) async {
+    final objectProvider = Provider.of<ObjectProvider>(
       context,
       listen: false,
     );
 
-    final objectB = Model3D(
-      id: 'object_b',
-      name: 'Object B - Robot',
-      path: 'https://modelviewer.dev/shared-assets/models/RobotExpressive.glb',
-      scale: 1.0,
-      autoRotate: true,
-      backgroundColor: '#FFFFFF',
-      createdAt: DateTime.now(),
-    );
-
-    modelViewerProvider.loadModel(objectB);
-    _showSuccessMessage(context, 'Object B loaded successfully!');
+    await objectProvider.loadObjectB();
+    
+    if (objectProvider.error != null) {
+      _showErrorMessage(context, objectProvider.error!);
+    } else if (objectProvider.hasObjectB) {
+      _showSuccessMessage(context, 'Object B loaded successfully!');
+      // Navigate to viewer to show the object
+      Navigator.of(context).pushNamed('/superimposed-viewer');
+    }
   }
 
   void _open3DViewer(BuildContext context) {
@@ -501,6 +496,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showErrorMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.error_outline, color: Colors.white, size: 20),
+            const SizedBox(width: 8),
+            Expanded(child: Text(message)),
+          ],
+        ),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
