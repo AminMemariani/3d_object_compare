@@ -51,14 +51,33 @@ class ObjectLoaderProvider extends ChangeNotifier {
         type: FileType.custom,
         allowedExtensions: ['obj', 'stl'],
         allowMultiple: false,
+        withData: kIsWeb, // Request bytes on web
       );
 
       if (result != null && result.files.isNotEmpty) {
         final file = result.files.first;
+        
+        // On web, path is null but bytes are available
+        // On native, path is available
+        final filePath = kIsWeb 
+            ? 'web://${file.name}' // Virtual path for web
+            : (file.path ?? '');
+            
+        // Verify we have file data
+        if (!kIsWeb && file.path == null) {
+          _setError('Unable to access file path');
+          return;
+        }
+        
+        if (kIsWeb && file.bytes == null) {
+          _setError('Unable to read file data');
+          return;
+        }
+        
         final object = Object3D(
           id: '${objectType.toLowerCase()}_${DateTime.now().millisecondsSinceEpoch}',
           name: file.name,
-          filePath: file.path ?? '',
+          filePath: filePath,
           fileExtension: file.extension ?? '',
           color: objectType == 'A'
               ? const Color3D(0, 0.5, 1) // Blue for Object A

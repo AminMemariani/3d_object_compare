@@ -57,12 +57,30 @@ class ObjectProvider extends ChangeNotifier {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['obj', 'stl'],
+        withData: kIsWeb, // Request bytes on web
       );
 
-      if (result != null && result.files.single.path != null) {
-        final filePath = result.files.single.path!;
-        final fileName = result.files.single.name;
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.single;
+        final fileName = file.name;
         final fileExtension = fileName.split('.').last;
+        
+        // On web, path is null but bytes are available
+        // On native, path is available
+        final filePath = kIsWeb 
+            ? 'web://$fileName' // Virtual path for web
+            : (file.path ?? '');
+            
+        // Verify we have file data
+        if (!kIsWeb && file.path == null) {
+          _setError('Unable to access file path');
+          return;
+        }
+        
+        if (kIsWeb && file.bytes == null) {
+          _setError('Unable to read file data');
+          return;
+        }
 
         final newObject = Object3D(
           id: objectType == 'A' ? 'object_a' : 'object_b',

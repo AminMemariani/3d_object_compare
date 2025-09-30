@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:file_picker/file_picker.dart';
 import 'package:vector_math/vector_math_64.dart';
 import '../../../../core/mvvm/base_view_model.dart';
@@ -46,12 +47,28 @@ class ObjectViewModel extends BaseViewModel with AsyncOperationMixin {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['obj', 'stl'],
+      withData: kIsWeb, // Request bytes on web
     );
 
-    if (result != null && result.files.single.path != null) {
-      final filePath = result.files.single.path!;
-      final fileName = result.files.single.name;
+    if (result != null && result.files.isNotEmpty) {
+      final file = result.files.single;
+      final fileName = file.name;
       final fileExtension = fileName.split('.').last;
+      
+      // On web, path is null but bytes are available
+      // On native, path is available
+      final filePath = kIsWeb 
+          ? 'web://$fileName' // Virtual path for web
+          : (file.path ?? '');
+          
+      // Verify we have file data
+      if (!kIsWeb && file.path == null) {
+        throw Exception('Unable to access file path');
+      }
+      
+      if (kIsWeb && file.bytes == null) {
+        throw Exception('Unable to read file data');
+      }
 
       final newObject = Object3D(
         id: objectType == 'A' ? 'object_a' : 'object_b',
