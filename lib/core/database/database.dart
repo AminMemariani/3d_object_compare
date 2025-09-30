@@ -17,8 +17,11 @@ class Database {
 
   static Future<Isar> _init() async {
     if (kIsWeb) {
-      // On web, Isar uses IndexedDB and must not be given a directory path.
-      return await Isar.open([UserPreferencesModelSchema]);
+      // On web, pass an empty directory to satisfy required param; ignored by isar_web.
+      return await Isar.open(
+        [UserPreferencesModelSchema],
+        directory: '',
+      );
     }
 
     final dir = await getApplicationDocumentsDirectory();
