@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/di/injection_container.dart' as di;
-import 'core/animations/page_transitions.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/model_viewer/presentation/pages/model_viewer_page.dart';
 import 'features/model_viewer/presentation/pages/compare_view_page.dart';
@@ -138,40 +137,19 @@ class MyApp extends StatelessWidget {
             onGenerateRoute: (settings) {
               switch (settings.name) {
                 case '/':
-                  return CustomPageRoute(
-                    child: const HomePage(),
-                    transitionType: PageTransitionType.fade,
-                  );
+                  return MaterialPageRoute(builder: (_) => const HomePage());
                 case '/model-viewer':
-                  return CustomPageRoute(
-                    child: const ModelViewerPage(),
-                    transitionType: PageTransitionType.slideAndScale,
-                  );
+                  return MaterialPageRoute(builder: (_) => const ModelViewerPage());
                 case '/compare-view':
-                  return CustomPageRoute(
-                    child: const CompareViewPage(),
-                    transitionType: PageTransitionType.zoom,
-                  );
+                  return MaterialPageRoute(builder: (_) => const CompareViewPage());
                 case '/superimposed-viewer':
-                  return CustomPageRoute(
-                    child: const SuperimposedViewerPage(),
-                    transitionType: PageTransitionType.cube3D,
-                  );
+                  return MaterialPageRoute(builder: (_) => const SuperimposedViewerPage());
                 case '/superimposed-viewer-mvvm':
-                  return CustomPageRoute(
-                    child: const SuperimposedViewerMVVMPage(),
-                    transitionType: PageTransitionType.spiral,
-                  );
+                  return MaterialPageRoute(builder: (_) => const SuperimposedViewerMVVMPage());
                 case '/settings':
-                  return CustomPageRoute(
-                    child: const SettingsPage(),
-                    transitionType: PageTransitionType.curtain,
-                  );
+                  return MaterialPageRoute(builder: (_) => const SettingsPage());
                 default:
-                  return CustomPageRoute(
-                    child: const HomePage(),
-                    transitionType: PageTransitionType.fade,
-                  );
+                  return MaterialPageRoute(builder: (_) => const HomePage());
               }
             },
             initialRoute: '/',
@@ -250,40 +228,19 @@ class MyApp extends StatelessWidget {
               onGenerateRoute: (settings) {
                 switch (settings.name) {
                   case '/':
-                    return CustomPageRoute(
-                      child: const HomePage(),
-                      transitionType: PageTransitionType.fade,
-                    );
+                    return MaterialPageRoute(builder: (_) => const HomePage());
                   case '/model-viewer':
-                    return CustomPageRoute(
-                      child: const ModelViewerPage(),
-                      transitionType: PageTransitionType.slideAndScale,
-                    );
+                    return MaterialPageRoute(builder: (_) => const ModelViewerPage());
                   case '/compare-view':
-                    return CustomPageRoute(
-                      child: const CompareViewPage(),
-                      transitionType: PageTransitionType.zoom,
-                    );
+                    return MaterialPageRoute(builder: (_) => const CompareViewPage());
                   case '/superimposed-viewer':
-                    return CustomPageRoute(
-                      child: const SuperimposedViewerPage(),
-                      transitionType: PageTransitionType.cube3D,
-                    );
+                    return MaterialPageRoute(builder: (_) => const SuperimposedViewerPage());
                   case '/superimposed-viewer-mvvm':
-                    return CustomPageRoute(
-                      child: const SuperimposedViewerMVVMPage(),
-                      transitionType: PageTransitionType.spiral,
-                    );
+                    return MaterialPageRoute(builder: (_) => const SuperimposedViewerMVVMPage());
                   case '/settings':
-                    return CustomPageRoute(
-                      child: const SettingsPage(),
-                      transitionType: PageTransitionType.curtain,
-                    );
+                    return MaterialPageRoute(builder: (_) => const SettingsPage());
                   default:
-                    return CustomPageRoute(
-                      child: const HomePage(),
-                      transitionType: PageTransitionType.fade,
-                    );
+                    return MaterialPageRoute(builder: (_) => const HomePage());
                 }
               },
               initialRoute: '/',
