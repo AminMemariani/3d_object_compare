@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../model_viewer/presentation/providers/model_viewer_provider.dart';
-import '../../../model_viewer/presentation/providers/object_provider.dart';
+import '../../../model_viewer/presentation/providers/object_loader_provider.dart';
 import '../../../model_viewer/domain/entities/model_3d.dart';
 import '../../../tutorial/presentation/widgets/tutorial_button.dart';
 import '../../../tutorial/presentation/widgets/tutorial_overlay.dart';
@@ -437,16 +437,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadObjectA(BuildContext context) async {
-    final objectProvider = Provider.of<ObjectProvider>(
+    final objectLoaderProvider = Provider.of<ObjectLoaderProvider>(
       context,
       listen: false,
     );
 
-    await objectProvider.loadObjectA();
+    await objectLoaderProvider.loadObjectA();
     
-    if (objectProvider.error != null) {
-      _showErrorMessage(context, objectProvider.error!);
-    } else if (objectProvider.hasObjectA) {
+    if (objectLoaderProvider.error != null) {
+      _showErrorMessage(context, objectLoaderProvider.error!);
+    } else if (objectLoaderProvider.hasObjectA) {
       _showSuccessMessage(context, 'Object A loaded successfully!');
       // Navigate to viewer to show the object
       Navigator.of(context).pushNamed('/superimposed-viewer');
@@ -454,16 +454,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadObjectB(BuildContext context) async {
-    final objectProvider = Provider.of<ObjectProvider>(
+    final objectLoaderProvider = Provider.of<ObjectLoaderProvider>(
       context,
       listen: false,
     );
 
-    await objectProvider.loadObjectB();
+    await objectLoaderProvider.loadObjectB();
     
-    if (objectProvider.error != null) {
-      _showErrorMessage(context, objectProvider.error!);
-    } else if (objectProvider.hasObjectB) {
+    if (objectLoaderProvider.error != null) {
+      _showErrorMessage(context, objectLoaderProvider.error!);
+    } else if (objectLoaderProvider.hasObjectB) {
       _showSuccessMessage(context, 'Object B loaded successfully!');
       // Navigate to viewer to show the object
       Navigator.of(context).pushNamed('/superimposed-viewer');
