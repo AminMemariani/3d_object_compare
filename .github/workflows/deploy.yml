@@ -39,7 +39,10 @@ jobs:
       run: flutter test || echo "Some tests failed, but continuing with deployment"
       
     - name: Build web app
-      run: flutter build web --release --base-href /3d_object_compare/
+      run: flutter build web --release --base-href /3d_object_compare/ --pwa-strategy=none
+
+    - name: Add SPA 404 fallback
+      run: cp build/web/index.html build/web/404.html
       
     - name: Setup Pages
       if: github.ref == 'refs/heads/main'
