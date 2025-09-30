@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../entities/object_3d.dart';
 import '../../entities/procrustes_result.dart';
 import '../interfaces/procrustes_service_interface.dart';
