@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/di/injection_container.dart' as di;
@@ -19,7 +20,15 @@ import 'features/tutorial/presentation/providers/tutorial_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await di.init();
+  try {
+    await di.init();
+  } catch (e) {
+    if (kIsWeb) {
+      print('Warning: Initialization error on web, continuing: $e');
+    } else {
+      rethrow;
+    }
+  }
   runApp(const MyApp());
 }
 
@@ -28,14 +37,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Check if UserPreferencesProvider is available
+    final bool hasUserPreferences = di.sl.isRegistered<UserPreferencesProvider>();
+    
     return MultiProvider(
       providers: [
         // Legacy providers (for backward compatibility)
-        ChangeNotifierProvider(
-          create: (_) =>
-              di.sl<UserPreferencesProvider>()
-                ..loadUserPreferences('default_user'),
-        ),
+        if (hasUserPreferences)
+          ChangeNotifierProvider(
+            create: (_) =>
+                di.sl<UserPreferencesProvider>()
+                  ..loadUserPreferences('default_user'),
+          ),
         ChangeNotifierProvider(create: (_) => di.sl<ModelViewerProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<ObjectLoaderProvider>()),
 
@@ -50,8 +63,9 @@ class MyApp extends StatelessWidget {
         // Tutorial Provider
         ChangeNotifierProvider(create: (_) => TutorialProvider()),
       ],
-      child: Consumer<UserPreferencesProvider>(
-        builder: (context, userPrefs, child) {
+      child: hasUserPreferences
+          ? Consumer<UserPreferencesProvider>(
+              builder: (context, userPrefs, child) {
           return MaterialApp(
             title: 'Flutter 3D App',
             theme: ThemeData(
@@ -163,7 +177,117 @@ class MyApp extends StatelessWidget {
             initialRoute: '/',
           );
         },
-      ),
+      )
+          : MaterialApp(
+              title: 'Flutter 3D App',
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: Colors.deepPurple,
+                  brightness: Brightness.light,
+                ),
+                useMaterial3: true,
+                appBarTheme: const AppBarTheme(
+                  centerTitle: false,
+                  elevation: 0,
+                  scrolledUnderElevation: 0,
+                ),
+                cardTheme: CardThemeData(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                filledButtonTheme: FilledButtonThemeData(
+                  style: FilledButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+              darkTheme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: Colors.deepPurple,
+                  brightness: Brightness.dark,
+                ),
+                useMaterial3: true,
+                appBarTheme: const AppBarTheme(
+                  centerTitle: false,
+                  elevation: 0,
+                  scrolledUnderElevation: 0,
+                ),
+                cardTheme: CardThemeData(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                filledButtonTheme: FilledButtonThemeData(
+                  style: FilledButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+              themeMode: ThemeMode.system,
+              onGenerateRoute: (settings) {
+                switch (settings.name) {
+                  case '/':
+                    return CustomPageRoute(
+                      child: const HomePage(),
+                      transitionType: PageTransitionType.fade,
+                    );
+                  case '/model-viewer':
+                    return CustomPageRoute(
+                      child: const ModelViewerPage(),
+                      transitionType: PageTransitionType.slideAndScale,
+                    );
+                  case '/compare-view':
+                    return CustomPageRoute(
+                      child: const CompareViewPage(),
+                      transitionType: PageTransitionType.zoom,
+                    );
+                  case '/superimposed-viewer':
+                    return CustomPageRoute(
+                      child: const SuperimposedViewerPage(),
+                      transitionType: PageTransitionType.cube3D,
+                    );
+                  case '/superimposed-viewer-mvvm':
+                    return CustomPageRoute(
+                      child: const SuperimposedViewerMVVMPage(),
+                      transitionType: PageTransitionType.spiral,
+                    );
+                  case '/settings':
+                    return CustomPageRoute(
+                      child: const SettingsPage(),
+                      transitionType: PageTransitionType.curtain,
+                    );
+                  default:
+                    return CustomPageRoute(
+                      child: const HomePage(),
+                      transitionType: PageTransitionType.fade,
+                    );
+                }
+              },
+              initialRoute: '/',
+            ),
     );
   }
 

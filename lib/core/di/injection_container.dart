@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import '../database/database.dart';
@@ -18,34 +19,43 @@ import '../../features/model_viewer/presentation/viewmodels/ui_view_model.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  // External
-  final isar = await Database.instance;
-  sl.registerLazySingleton<Isar>(() => isar);
+  try {
+    // External - Initialize Isar database
+    final isar = await Database.instance;
+    sl.registerLazySingleton<Isar>(() => isar);
 
-  // Data sources
-  sl.registerLazySingleton<UserPreferencesLocalDataSource>(
-    () => UserPreferencesLocalDataSourceImpl(isar: sl()),
-  );
+    // Data sources
+    sl.registerLazySingleton<UserPreferencesLocalDataSource>(
+      () => UserPreferencesLocalDataSourceImpl(isar: sl()),
+    );
 
-  // Repository
-  sl.registerLazySingleton<UserPreferencesRepository>(
-    () => UserPreferencesRepositoryImpl(localDataSource: sl()),
-  );
+    // Repository
+    sl.registerLazySingleton<UserPreferencesRepository>(
+      () => UserPreferencesRepositoryImpl(localDataSource: sl()),
+    );
 
-  // Use cases
-  sl.registerLazySingleton(() => GetUserPreferences(sl()));
-  sl.registerLazySingleton(() => SaveUserPreferences(sl()));
+    // Use cases
+    sl.registerLazySingleton(() => GetUserPreferences(sl()));
+    sl.registerLazySingleton(() => SaveUserPreferences(sl()));
 
-  // Providers
-  sl.registerFactory(
-    () => UserPreferencesProvider(
-      getUserPreferences: sl(),
-      saveUserPreferences: sl(),
-    ),
-  );
+    // Providers
+    sl.registerFactory(
+      () => UserPreferencesProvider(
+        getUserPreferences: sl(),
+        saveUserPreferences: sl(),
+      ),
+    );
+  } catch (e) {
+    // If database initialization fails (e.g., on web), skip user preferences
+    if (kIsWeb) {
+      print('Warning: Database initialization failed on web, skipping user preferences: $e');
+    } else {
+      rethrow;
+    }
+  }
 
+  // Always register these providers (they don't depend on database)
   sl.registerFactory(() => ModelViewerProvider());
-
   sl.registerFactory(() => ObjectLoaderProvider());
 
   // Features - New Provider Architecture
