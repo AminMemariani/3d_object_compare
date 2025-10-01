@@ -39,6 +39,7 @@ dependencies:
   flutter_gl: ^0.0.2
   model_viewer_plus: ^1.7.0
   ar_flutter_plugin: ^0.7.3
+  flutter_cube: ^0.1.1
   
   # 3D Object Loading
   file_picker: ^8.0.0+1

@@ -5,6 +5,7 @@ import '../providers/object_loader_provider.dart';
 import '../../domain/entities/object_3d.dart';
 import '../../domain/entities/procrustes_result.dart';
 import '../widgets/procrustes_results_card.dart';
+import '../widgets/advanced_3d_viewer.dart';
 
 class SuperimposedViewerPage extends StatefulWidget {
   const SuperimposedViewerPage({super.key});
@@ -237,6 +238,57 @@ class _SuperimposedViewerPageState extends State<SuperimposedViewerPage>
   }
 
   Widget _buildObjectView(BuildContext context, Object3D object, String label) {
+    final provider = Provider.of<ObjectLoaderProvider>(context, listen: false);
+    
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: object.color.red > 0.5 ? Colors.red : Colors.blue,
+          width: 3,
+        ),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: Advanced3DViewer(
+          object: object,
+          backgroundColor: Color.fromRGBO(
+            (object.color.red * 255).round(),
+            (object.color.green * 255).round(),
+            (object.color.blue * 255).round(),
+            1.0,
+          ),
+          showControls: true,
+          onPositionChanged: (position) {
+            if (label == 'Object A') {
+              // Update Object A position
+              provider.updateObjectAPosition(position);
+            } else {
+              // Update Object B position
+              provider.updateObjectBPosition(position);
+            }
+          },
+          onRotationChanged: (rotation) {
+            if (label == 'Object A') {
+              provider.updateObjectARotation(rotation);
+            } else {
+              provider.updateObjectBRotation(rotation);
+            }
+          },
+          onScaleChanged: (scale) {
+            if (label == 'Object A') {
+              provider.updateObjectAScale(scale);
+            } else {
+              provider.updateObjectBScale(scale);
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  // Keep the old placeholder as backup
+  Widget _buildObjectViewLegacy(BuildContext context, Object3D object, String label) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(

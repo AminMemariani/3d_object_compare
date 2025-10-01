@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../model_viewer/presentation/providers/model_viewer_provider.dart';
 import '../../../model_viewer/presentation/providers/object_loader_provider.dart';
-import '../../../model_viewer/domain/entities/model_3d.dart';
 import '../../../tutorial/presentation/widgets/tutorial_button.dart';
 import '../../../tutorial/presentation/widgets/tutorial_overlay.dart';
 import '../../../tutorial/presentation/providers/tutorial_provider.dart';

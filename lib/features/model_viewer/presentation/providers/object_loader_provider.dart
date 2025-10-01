@@ -105,6 +105,34 @@ class ObjectLoaderProvider extends ChangeNotifier {
     }
   }
 
+  // Transform Object A
+  void updateObjectAPosition(Vector3 position) {
+    if (_objectA != null) {
+      _objectA = _objectA!.copyWith(
+        position: position,
+        lastModified: DateTime.now(),
+      );
+      notifyListeners();
+    }
+  }
+
+  void updateObjectARotation(Vector3 rotation) {
+    if (_objectA != null) {
+      _objectA = _objectA!.copyWith(
+        rotation: rotation,
+        lastModified: DateTime.now(),
+      );
+      notifyListeners();
+    }
+  }
+
+  void updateObjectAScale(Vector3 scale) {
+    if (_objectA != null) {
+      _objectA = _objectA!.copyWith(scale: scale, lastModified: DateTime.now());
+      notifyListeners();
+    }
+  }
+
   // Transform Object B
   void updateObjectBPosition(Vector3 position) {
     if (_objectB != null) {
