@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
-import '../../../model_viewer/domain/entities/model_3d.dart';
-import '../providers/object_loader_provider.dart';
+import '../../../../mvvm/viewmodels/object_comparison_viewmodel.dart';
+import '../../../../mvvm/models/object_model.dart';
 import '../widgets/advanced_3d_viewer.dart';
 import '../../domain/entities/object_3d.dart';
 
@@ -143,11 +143,11 @@ class _CompareViewPageState extends State<CompareViewPage>
   }
 
   Widget _buildComparisonView(BuildContext context) {
-    return Consumer<ObjectLoaderProvider>(
-      builder: (context, provider, child) {
+    return Consumer<ObjectComparisonViewModel>(
+      builder: (context, viewModel, child) {
         // If no objects loaded, show empty state
-        if (!provider.hasObjectA && !provider.hasObjectB) {
-          return _buildEmptyState(context, provider);
+        if (!viewModel.hasObjectA && !viewModel.hasObjectB) {
+          return _buildEmptyState(context, viewModel);
         }
 
         return Container(
@@ -156,29 +156,29 @@ class _CompareViewPageState extends State<CompareViewPage>
             children: [
               // Object A View
               Expanded(
-                child: provider.hasObjectA
+                child: viewModel.hasObjectA
                     ? _buildObjectView(
                         context,
-                        provider.objectA!,
+                        viewModel.objectA!,
                         'Object A',
                         Colors.blue,
                       )
                     : _buildPlaceholderView(context, 'Object A', Colors.blue, () {
-                        provider.loadObjectA();
+                        viewModel.loadObjectA();
                       }),
               ),
               const SizedBox(width: 16),
               // Object B View
               Expanded(
-                child: provider.hasObjectB
+                child: viewModel.hasObjectB
                     ? _buildObjectView(
                         context,
-                        provider.objectB!,
+                        viewModel.objectB!,
                         'Object B',
                         Colors.purple,
                       )
                     : _buildPlaceholderView(context, 'Object B', Colors.purple, () {
-                        provider.loadObjectB();
+                        viewModel.loadObjectB();
                       }),
               ),
             ],
@@ -188,7 +188,7 @@ class _CompareViewPageState extends State<CompareViewPage>
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, ObjectLoaderProvider provider) {
+  Widget _buildEmptyState(BuildContext context, ObjectComparisonViewModel viewModel) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -213,13 +213,13 @@ class _CompareViewPageState extends State<CompareViewPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FilledButton.icon(
-                onPressed: () => provider.loadObjectA(),
+                onPressed: () => viewModel.loadObjectA(),
                 icon: const Icon(Icons.upload_rounded),
                 label: const Text('Load Object A'),
               ),
               const SizedBox(width: 16),
               FilledButton.icon(
-                onPressed: () => provider.loadObjectB(),
+                onPressed: () => viewModel.loadObjectB(),
                 icon: const Icon(Icons.upload_rounded),
                 label: const Text('Load Object B'),
               ),
@@ -290,11 +290,26 @@ class _CompareViewPageState extends State<CompareViewPage>
 
   Widget _buildObjectView(
     BuildContext context,
-    Object3D object,
+    ObjectModel object,
     String label,
     Color accentColor,
   ) {
-    final provider = Provider.of<ObjectLoaderProvider>(context, listen: false);
+    final viewModel = Provider.of<ObjectComparisonViewModel>(context, listen: false);
+    
+    // Convert ObjectModel to Object3D for Advanced3DViewer (temporary compatibility)
+    final object3d = Object3D(
+      id: object.id,
+      name: object.name,
+      filePath: object.filePath,
+      fileExtension: object.fileExtension,
+      position: object.position,
+      rotation: object.rotation,
+      scale: object.scale,
+      color: Color3D(object.color.red, object.color.green, object.color.blue),
+      opacity: object.opacity,
+      createdAt: object.createdAt,
+      lastModified: object.lastModified,
+    );
     
     return Container(
       decoration: BoxDecoration(
@@ -367,7 +382,7 @@ class _CompareViewPageState extends State<CompareViewPage>
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Advanced3DViewer(
-                  object: object,
+                  object: object3d,
                   backgroundColor: Color.fromRGBO(
                     (object.color.red * 255).round(),
                     (object.color.green * 255).round(),
@@ -377,23 +392,23 @@ class _CompareViewPageState extends State<CompareViewPage>
                   showControls: true,
                   onPositionChanged: (position) {
                     if (label == 'Object A') {
-                      provider.updateObjectAPosition(position);
+                      viewModel.updateObjectAPosition(position);
                     } else {
-                      provider.updateObjectBPosition(position);
+                      viewModel.updateObjectBPosition(position);
                     }
                   },
                   onRotationChanged: (rotation) {
                     if (label == 'Object A') {
-                      provider.updateObjectARotation(rotation);
+                      viewModel.updateObjectARotation(rotation);
                     } else {
-                      provider.updateObjectBRotation(rotation);
+                      viewModel.updateObjectBRotation(rotation);
                     }
                   },
                   onScaleChanged: (scale) {
                     if (label == 'Object A') {
-                      provider.updateObjectAScale(scale);
+                      viewModel.updateObjectAScale(scale);
                     } else {
-                      provider.updateObjectBScale(scale);
+                      viewModel.updateObjectBScale(scale);
                     }
                   },
                 ),
@@ -464,15 +479,15 @@ class _CompareViewPageState extends State<CompareViewPage>
             ],
           ),
           const SizedBox(height: 16),
-          Consumer<ObjectLoaderProvider>(
-            builder: (context, provider, child) {
+          Consumer<ObjectComparisonViewModel>(
+            builder: (context, viewModel, child) {
               return Row(
                 children: [
                   Expanded(
                     child: _buildInfoCard(
                       context,
                       'Object A',
-                      provider.hasObjectA ? provider.objectA!.name : 'Not loaded',
+                      viewModel.hasObjectA ? viewModel.objectA!.name : 'Not loaded',
                       Colors.blue,
                     ),
                   ),
@@ -481,7 +496,7 @@ class _CompareViewPageState extends State<CompareViewPage>
                     child: _buildInfoCard(
                       context,
                       'Object B',
-                      provider.hasObjectB ? provider.objectB!.name : 'Not loaded',
+                      viewModel.hasObjectB ? viewModel.objectB!.name : 'Not loaded',
                       Colors.purple,
                     ),
                   ),

@@ -1,33 +1,15 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'core/di/injection_container.dart' as di;
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/model_viewer/presentation/pages/model_viewer_page.dart';
 import 'features/model_viewer/presentation/pages/compare_view_page.dart';
 import 'features/model_viewer/presentation/pages/superimposed_viewer_page.dart';
-import 'features/model_viewer/presentation/pages/superimposed_viewer_mvvm_page.dart';
 import 'features/user_preferences/presentation/pages/settings_page.dart';
-import 'features/user_preferences/presentation/providers/user_preferences_provider.dart';
-import 'features/model_viewer/presentation/providers/model_viewer_provider.dart';
-import 'features/model_viewer/presentation/providers/object_loader_provider.dart';
-import 'features/model_viewer/presentation/providers/object_provider.dart';
-import 'features/model_viewer/presentation/providers/ui_provider.dart';
-import 'features/model_viewer/presentation/viewmodels/object_view_model.dart';
-import 'features/model_viewer/presentation/viewmodels/ui_view_model.dart';
-import 'features/tutorial/presentation/providers/tutorial_provider.dart';
+import 'mvvm/viewmodels/object_comparison_viewmodel.dart';
+import 'mvvm/viewmodels/app_viewmodel.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await di.init();
-  } catch (e) {
-    if (kIsWeb) {
-      print('Warning: Initialization error on web, continuing: $e');
-    } else {
-      rethrow;
-    }
-  }
   runApp(const MyApp());
 }
 
@@ -36,37 +18,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Check if UserPreferencesProvider is available
-    final bool hasUserPreferences = di.sl.isRegistered<UserPreferencesProvider>();
-    
     return MultiProvider(
       providers: [
-        // Legacy providers (for backward compatibility)
-        if (hasUserPreferences)
-          ChangeNotifierProvider(
-            create: (_) =>
-                di.sl<UserPreferencesProvider>()
-                  ..loadUserPreferences('default_user'),
-          ),
-        ChangeNotifierProvider(create: (_) => di.sl<ModelViewerProvider>()),
-        ChangeNotifierProvider(create: (_) => di.sl<ObjectLoaderProvider>()),
-
-        // New Provider Architecture
-        ChangeNotifierProvider(create: (_) => di.sl<ObjectProvider>()),
-        ChangeNotifierProvider(create: (_) => di.sl<UIProvider>()),
-
-        // MVVM ViewModels
-        ChangeNotifierProvider(create: (_) => di.sl<ObjectViewModel>()),
-        ChangeNotifierProvider(create: (_) => di.sl<UIViewModel>()),
-
-        // Tutorial Provider
-        ChangeNotifierProvider(create: (_) => TutorialProvider()),
+        // MVVM ViewModels - Simplified architecture
+        ChangeNotifierProvider(create: (_) => ObjectComparisonViewModel()),
+        ChangeNotifierProvider(create: (_) => AppViewModel()),
       ],
-      child: hasUserPreferences
-          ? Consumer<UserPreferencesProvider>(
-              builder: (context, userPrefs, child) {
+      child: Consumer<AppViewModel>(
+        builder: (context, appVM, child) {
           return MaterialApp(
-            title: 'Flutter 3D App',
+            title: '3D Object Viewer',
+            debugShowCheckedModeBanner: false,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
                 seedColor: Colors.deepPurple,
@@ -133,7 +95,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
             ),
-            themeMode: _getThemeMode(userPrefs.preferences?.themeMode),
+            themeMode: appVM.themeMode,
             onGenerateRoute: (settings) {
               switch (settings.name) {
                 case '/':
@@ -144,8 +106,6 @@ class MyApp extends StatelessWidget {
                   return MaterialPageRoute(builder: (_) => const CompareViewPage());
                 case '/superimposed-viewer':
                   return MaterialPageRoute(builder: (_) => const SuperimposedViewerPage());
-                case '/superimposed-viewer-mvvm':
-                  return MaterialPageRoute(builder: (_) => const SuperimposedViewerMVVMPage());
                 case '/settings':
                   return MaterialPageRoute(builder: (_) => const SettingsPage());
                 default:
@@ -155,107 +115,7 @@ class MyApp extends StatelessWidget {
             initialRoute: '/',
           );
         },
-      )
-          : MaterialApp(
-              title: 'Flutter 3D App',
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: Colors.deepPurple,
-                  brightness: Brightness.light,
-                ),
-                useMaterial3: true,
-                appBarTheme: const AppBarTheme(
-                  centerTitle: false,
-                  elevation: 0,
-                  scrolledUnderElevation: 0,
-                ),
-                cardTheme: CardThemeData(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                elevatedButtonTheme: ElevatedButtonThemeData(
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                filledButtonTheme: FilledButtonThemeData(
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-              darkTheme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: Colors.deepPurple,
-                  brightness: Brightness.dark,
-                ),
-                useMaterial3: true,
-                appBarTheme: const AppBarTheme(
-                  centerTitle: false,
-                  elevation: 0,
-                  scrolledUnderElevation: 0,
-                ),
-                cardTheme: CardThemeData(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                elevatedButtonTheme: ElevatedButtonThemeData(
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                filledButtonTheme: FilledButtonThemeData(
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-              themeMode: ThemeMode.system,
-              onGenerateRoute: (settings) {
-                switch (settings.name) {
-                  case '/':
-                    return MaterialPageRoute(builder: (_) => const HomePage());
-                  case '/model-viewer':
-                    return MaterialPageRoute(builder: (_) => const ModelViewerPage());
-                  case '/compare-view':
-                    return MaterialPageRoute(builder: (_) => const CompareViewPage());
-                  case '/superimposed-viewer':
-                    return MaterialPageRoute(builder: (_) => const SuperimposedViewerPage());
-                  case '/superimposed-viewer-mvvm':
-                    return MaterialPageRoute(builder: (_) => const SuperimposedViewerMVVMPage());
-                  case '/settings':
-                    return MaterialPageRoute(builder: (_) => const SettingsPage());
-                  default:
-                    return MaterialPageRoute(builder: (_) => const HomePage());
-                }
-              },
-              initialRoute: '/',
-            ),
+      ),
     );
-  }
-
-  ThemeMode _getThemeMode(String? themeMode) {
-    switch (themeMode) {
-      case 'light':
-        return ThemeMode.light;
-      case 'dark':
-        return ThemeMode.dark;
-      default:
-        return ThemeMode.system;
-    }
   }
 }

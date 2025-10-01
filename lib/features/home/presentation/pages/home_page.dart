@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../model_viewer/presentation/providers/object_loader_provider.dart';
+import '../../../../mvvm/viewmodels/object_comparison_viewmodel.dart';
+import '../../../../mvvm/viewmodels/app_viewmodel.dart';
 import '../../../tutorial/presentation/widgets/tutorial_button.dart';
 import '../../../tutorial/presentation/widgets/tutorial_overlay.dart';
 import '../../../tutorial/presentation/providers/tutorial_provider.dart';
@@ -435,36 +436,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadObjectA(BuildContext context) async {
-    final objectLoaderProvider = Provider.of<ObjectLoaderProvider>(
+    final viewModel = Provider.of<ObjectComparisonViewModel>(
       context,
       listen: false,
     );
 
-    await objectLoaderProvider.loadObjectA();
+    await viewModel.loadObjectA();
     
-    if (objectLoaderProvider.error != null) {
-      _showErrorMessage(context, objectLoaderProvider.error!);
-    } else if (objectLoaderProvider.hasObjectA) {
+    if (viewModel.error != null) {
+      _showErrorMessage(context, viewModel.error!);
+    } else if (viewModel.hasObjectA) {
       _showSuccessMessage(context, 'Object A loaded successfully!');
       // Navigate to viewer to show the object
-      Navigator.of(context).pushNamed('/superimposed-viewer');
+      Navigator.of(context).pushNamed('/compare-view');
     }
   }
 
   Future<void> _loadObjectB(BuildContext context) async {
-    final objectLoaderProvider = Provider.of<ObjectLoaderProvider>(
+    final viewModel = Provider.of<ObjectComparisonViewModel>(
       context,
       listen: false,
     );
 
-    await objectLoaderProvider.loadObjectB();
+    await viewModel.loadObjectB();
     
-    if (objectLoaderProvider.error != null) {
-      _showErrorMessage(context, objectLoaderProvider.error!);
-    } else if (objectLoaderProvider.hasObjectB) {
+    if (viewModel.error != null) {
+      _showErrorMessage(context, viewModel.error!);
+    } else if (viewModel.hasObjectB) {
       _showSuccessMessage(context, 'Object B loaded successfully!');
       // Navigate to viewer to show the object
-      Navigator.of(context).pushNamed('/superimposed-viewer');
+      Navigator.of(context).pushNamed('/compare-view');
     }
   }
 
