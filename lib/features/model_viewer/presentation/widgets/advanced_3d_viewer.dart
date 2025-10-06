@@ -1,9 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:vector_math/vector_math_64.dart' as vm;
-import '../../../../mvvm/models/object_model.dart';
 import '../../domain/entities/object_3d.dart';
 
 /// Advanced 3D Viewer with interactive controls for rotation, scale, and position
@@ -37,7 +35,6 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
   late vm.Vector3 _scale;
   
   bool _showTransformPanel = false;
-  String? _dataUrl;
 
   @override
   void initState() {

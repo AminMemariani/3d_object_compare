@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../mvvm/viewmodels/object_comparison_viewmodel.dart';
-import '../../../../mvvm/viewmodels/app_viewmodel.dart';
 import '../../../tutorial/presentation/widgets/tutorial_button.dart';
 import '../../../tutorial/presentation/widgets/tutorial_overlay.dart';
 import '../../../tutorial/presentation/providers/tutorial_provider.dart';

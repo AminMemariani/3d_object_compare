@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:model_viewer_plus/model_viewer_plus.dart';
 import '../../../../mvvm/viewmodels/object_comparison_viewmodel.dart';
 import '../../../../mvvm/models/object_model.dart';
 import '../widgets/advanced_3d_viewer.dart';
