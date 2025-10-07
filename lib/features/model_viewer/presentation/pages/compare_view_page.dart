@@ -61,15 +61,9 @@ class _CompareViewPageState extends State<CompareViewPage>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Theme.of(
-                context,
-              ).colorScheme.primaryContainer.withValues(alpha: 0.15),
               Theme.of(context).colorScheme.surface,
-              Theme.of(
-                context,
-              ).colorScheme.secondaryContainer.withValues(alpha: 0.12),
+              Theme.of(context).colorScheme.surfaceContainerLowest,
             ],
-            stops: const [0.0, 0.5, 1.0],
           ),
         ),
         child: SafeArea(

@@ -81,9 +81,9 @@ flutter:
 
   # Assets for the application
   assets:
-    - assets/images/
     - assets/models/
-    - assets/icons/
+    - assets/data/obj1/
+    - assets/data/obj2/
   
   # App icon and splash screen configuration
   generate: true

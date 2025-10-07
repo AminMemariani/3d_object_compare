@@ -1,8 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Internet access -->
     <uses-permission android:name="android.permission.INTERNET" />
+    
+    <!-- Camera for AR features -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
+    <!-- File access for Android 12 and below (API level 32 and below) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" 
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    
+    <!-- File access for Android 13+ (API level 33+) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    
+    <!-- Manage external storage for accessing all files (optional) -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" 
+        android:minSdkVersion="30" />
     
     <application
         android:label="3D Object Viewer"
@@ -46,6 +61,28 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        
+        <!-- File picker support for 3D model files -->
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.OPEN_DOCUMENT"/>
+        </intent>
+        
+        <!-- MIME types for 3D files -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:mimeType="model/obj"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:mimeType="application/sla"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:mimeType="application/octet-stream"/>
         </intent>
     </queries>
 </manifest>
