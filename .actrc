@@ -1,0 +1,18 @@
+# act configuration file
+# This file configures default settings for running GitHub Actions locally
+
+# Use linux/amd64 architecture (required for M-series Macs)
+--container-architecture linux/amd64
+
+# Use better Ubuntu image for actions
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+
+# Verbose output for debugging (comment out if too noisy)
+# -v
+
+# Reuse containers for faster runs (comment out to always start fresh)
+--reuse
+
+# Bind local workspace to container
+--bind
+

@@ -5,6 +5,9 @@ import 'features/model_viewer/presentation/pages/model_viewer_page.dart';
 import 'features/model_viewer/presentation/pages/compare_view_page.dart';
 import 'features/model_viewer/presentation/pages/superimposed_viewer_page.dart';
 import 'features/user_preferences/presentation/pages/settings_page.dart';
+import 'features/tutorial/presentation/providers/tutorial_provider.dart';
+import 'features/model_viewer/presentation/providers/object_loader_provider.dart';
+import 'features/model_viewer/presentation/providers/model_viewer_provider.dart';
 import 'mvvm/viewmodels/object_comparison_viewmodel.dart';
 import 'mvvm/viewmodels/app_viewmodel.dart';
 
@@ -23,11 +26,15 @@ class MyApp extends StatelessWidget {
         // MVVM ViewModels - Simplified architecture
         ChangeNotifierProvider(create: (_) => ObjectComparisonViewModel()),
         ChangeNotifierProvider(create: (_) => AppViewModel()),
+        // Feature Providers
+        ChangeNotifierProvider(create: (_) => TutorialProvider()),
+        ChangeNotifierProvider(create: (_) => ObjectLoaderProvider()),
+        ChangeNotifierProvider(create: (_) => ModelViewerProvider()),
       ],
       child: Consumer<AppViewModel>(
         builder: (context, appVM, child) {
           return MaterialApp(
-            title: '3D Object Viewer',
+            title: '3D Object Compare',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
