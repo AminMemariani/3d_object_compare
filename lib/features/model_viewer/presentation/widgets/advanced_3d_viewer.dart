@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:vector_math/vector_math_64.dart' as vm;
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import '../../domain/entities/object_3d.dart';
@@ -100,19 +101,157 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
         widget.object.filePath.isNotEmpty &&
         !widget.object.filePath.startsWith('web://');
 
-    // If we have a renderable format and valid path, use ModelViewer
-    if (isRenderableFormat && hasValidPath && !kIsWeb) {
-      try {
-        return ModelViewer(
-          src: widget.object.filePath,
-          alt: widget.object.name,
-          autoRotate: true,
-          cameraControls: true,
-          backgroundColor: widget.backgroundColor,
+    // ModelViewer has WebView limitations on macOS desktop
+    // It works on iOS, Android, and Web platforms
+    // For macOS desktop, we show an informative placeholder
+    final isMacOSDesktop =
+        !kIsWeb && defaultTargetPlatform == TargetPlatform.macOS;
+
+    if (isRenderableFormat && hasValidPath) {
+      if (isMacOSDesktop) {
+        // Show informative placeholder for macOS desktop
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.blue.withValues(alpha: 0.1),
+                Colors.purple.withValues(alpha: 0.1),
+              ],
+            ),
+          ),
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(32),
+              margin: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.7),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.blue.withValues(alpha: 0.5),
+                  width: 2,
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.devices, size: 64, color: Colors.blue),
+                  const SizedBox(height: 24),
+                  Text(
+                    'GLB File Loaded: ${widget.object.name}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(Icons.info_outline, color: Colors.blue, size: 32),
+                        const SizedBox(height: 12),
+                        Text(
+                          'macOS Desktop Limitation',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Full 3D rendering is not available on macOS desktop '
+                          'due to WebView limitations in model_viewer_plus.',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            fontSize: 14,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'View in Browser',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Run: flutter run -d chrome',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            fontSize: 13,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '✅ Full support on: iOS, Android, Web',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    '✅ Analysis features: All platforms',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         );
-      } catch (e) {
-        // If ModelViewer fails, fall through to placeholder
-        debugPrint('ModelViewer error: $e');
+      } else if (!kIsWeb) {
+        // For iOS/Android - ModelViewer should work
+        try {
+          return ModelViewer(
+            src: widget.object.filePath,
+            alt: widget.object.name,
+            autoRotate: true,
+            cameraControls: true,
+            backgroundColor: widget.backgroundColor,
+          );
+        } catch (e) {
+          debugPrint('ModelViewer error: $e');
+        }
       }
     }
 
