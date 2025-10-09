@@ -34,8 +34,8 @@ A professional-grade Flutter application designed to help researchers, professio
 ## 🔬 Advanced Comparison Features
 
 ### Core Functionality
-- **3D Object Loading**: Support for .obj and .stl file formats commonly used in scientific and medical applications
-- **Interactive 3D Navigation**: Gesture-based camera controls (orbit, zoom, pan) for detailed examination
+- **3D Object Loading**: Support for GLB/GLTF (full 3D rendering), OBJ/STL (data analysis)
+- **Interactive 3D Visualization**: Real-time rendering with camera controls for GLB/GLTF files
 - **Procrustes Analysis**: Advanced statistical alignment and comparison using proven mathematical algorithms
 - **Similarity Metrics**: Comprehensive analysis with RMSE, standard deviation, and similarity scores
 - **Export Results**: JSON and CSV export capabilities for integration with research workflows
@@ -165,11 +165,15 @@ flutter run
 
 ### Quick Start Guide
 
-1. **Load 3D Objects**: Tap "Load Object A" and "Load Object B" to select .obj or .stl files
+1. **Load 3D Objects**: Tap "Load Object A" and "Load Object B" to select 3D files
+   - For full 3D rendering: Use **.glb** or **.gltf** files
+   - For data analysis only: Use **.obj** or **.stl** files (shows placeholder)
 2. **Navigate to Viewer**: Tap "View Objects" to open the 3D viewer
 3. **Transform Objects**: Use the control panel to align Object B with Object A
 4. **Run Analysis**: Tap "Compare" to perform Procrustes analysis
 5. **Export Results**: Save analysis results as JSON or CSV files
+
+> **💡 Tip**: For the best visual experience, use GLB files. See the [Supported File Formats](#supported-file-formats) section for conversion tools.
 
 ### Use Case Examples
 
@@ -355,8 +359,9 @@ scripts\package_release.bat
 - Quick access to 3D viewer and settings
 
 #### Model Viewer Feature
-- 3D object loading (.obj, .stl formats)
-- Interactive 3D navigation with gesture controls
+- 3D object loading (GLB/GLTF for full rendering, OBJ/STL for analysis)
+- Real-time 3D visualization with WebGL (GLB/GLTF files)
+- Interactive navigation with gesture controls
 - Procrustes analysis and comparison
 - Superimposed viewing with opacity controls
 - Export functionality (JSON, CSV)
@@ -451,9 +456,87 @@ This tool implements **Generalized Procrustes Analysis (GPA)**, a statistical me
 - **Reproducible Results**: Ensuring consistent analysis across different users
 
 ### Supported File Formats
+
+#### 📊 File Format Support Overview
+
+| Format | Loading | 3D Rendering | Procrustes Analysis | Data Export |
+|--------|---------|--------------|---------------------|-------------|
+| **GLB** | ✅ | ✅ Full 3D | ✅ | ✅ |
+| **GLTF** | ✅ | ✅ Full 3D | ✅ | ✅ |
+| **OBJ** | ✅ | ⚠️ Placeholder | ✅ | ✅ |
+| **STL** | ✅ | ⚠️ Placeholder | ✅ | ✅ |
+
+#### 🎨 Real-Time 3D Rendering (GLB/GLTF)
+**Fully Supported Formats:**
+- **.glb**: GL Transmission Format Binary - Optimized for web and real-time rendering
+- **.gltf**: GL Transmission Format JSON - Modern 3D format with full material support
+
+**Features:**
+- ✅ Full 3D visualization with textures and materials
+- ✅ Interactive camera controls (orbit, zoom, pan)
+- ✅ Auto-rotation and animations
+- ✅ WebGL-optimized rendering
+- ✅ AR support (iOS/Android)
+- ✅ Cross-platform compatibility
+
+#### 📐 Data Analysis Only (OBJ/STL)
+**Supported for Analysis:**
 - **.obj**: Wavefront OBJ format (common in 3D modeling and scientific applications)
 - **.stl**: Stereolithography format (standard in 3D printing and medical imaging)
-- **Future Support**: Plans for .ply, .dae, and other scientific formats
+
+**Features:**
+- ✅ File loading and metadata extraction
+- ✅ Transform controls (position, rotation, scale)
+- ✅ Procrustes analysis and comparison
+- ✅ Data export (JSON, CSV)
+- ⚠️ **No real-time 3D rendering** - Shows informative placeholder with file details
+
+**Why No Real-Time Rendering?**
+OBJ and STL files are text-based formats that require conversion to GLB/GLTF for WebGL rendering. The placeholder view provides:
+- File information and metadata
+- Transform controls for data manipulation
+- Visual indicators of file status
+- Full support for analysis operations
+
+#### 🔄 Converting OBJ/STL to GLB
+
+**Option 1: Online Converters**
+- https://products.aspose.app/3d/conversion/obj-to-glb
+- https://anyconv.com/obj-to-glb-converter/
+
+**Option 2: Blender (Free)**
+```bash
+# Install Blender, then:
+File → Import → Wavefront (.obj)
+File → Export → glTF 2.0 (.glb)
+```
+
+**Option 3: Command Line (Node.js)**
+```bash
+npm install -g obj2gltf
+obj2gltf -i model.obj -o model.glb
+```
+
+**Option 4: Python**
+```bash
+pip install trimesh
+python -c "import trimesh; trimesh.load('model.obj').export('model.glb')"
+```
+
+#### 📦 Sample Models for Testing
+
+**Download Free GLB Models:**
+- [Khronos glTF Sample Models](https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0)
+- [Sketchfab](https://sketchfab.com/features/gltf) (filter by "Downloadable")
+- [Poly Pizza](https://poly.pizza/) (free 3D models in GLB format)
+
+#### 🔮 Future Format Support
+Plans to add support for:
+- **.ply**: Polygon File Format (point cloud data)
+- **.dae**: COLLADA format
+- **.fbx**: Autodesk format (gaming/animation)
+- **.3ds**: 3D Studio format
+- Direct OBJ→GLB runtime conversion
 
 ---
 

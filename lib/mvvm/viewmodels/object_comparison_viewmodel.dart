@@ -50,16 +50,64 @@ class ObjectComparisonViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['obj', 'stl', 'glb', 'gltf'],
-        withData: kIsWeb,
-      );
+      debugPrint('📁 [START] Opening file picker for Object $objectType...');
+      debugPrint('📁 Platform: ${kIsWeb ? "Web" : "Native"}');
 
-      if (result != null && result.files.isNotEmpty) {
+      FilePickerResult? result;
+
+      try {
+        // Try with more permissive settings first
+        result = await FilePicker.platform.pickFiles(
+          type: FileType
+              .any, // Changed from custom to any for better compatibility
+          allowMultiple: false,
+          allowCompression: false,
+          withData: kIsWeb,
+        );
+        debugPrint(
+          '📁 [PICKER RETURNED] Result: ${result != null ? "NOT NULL" : "NULL"}',
+        );
+      } catch (pickerError) {
+        debugPrint(
+          '❌ [PICKER ERROR] Exception during file picking: $pickerError',
+        );
+        _error = 'File picker error: $pickerError';
+        notifyListeners();
+        return;
+      }
+
+      if (result == null) {
+        debugPrint(
+          'ℹ️ [NULL RESULT] File picker returned null - likely cancelled or permission denied',
+        );
+        // Don't set error, just return - this is treated as cancellation
+        return;
+      }
+
+      debugPrint('📁 [RESULT VALID] Files count: ${result.files.length}');
+
+      if (result.files.isNotEmpty) {
         final file = result.files.single;
         final fileName = file.name;
         final fileExtension = fileName.split('.').last.toLowerCase();
+
+        debugPrint('📁 [FILE INFO] Name: $fileName');
+        debugPrint('📁 [FILE INFO] Extension: ${fileExtension.toUpperCase()}');
+        debugPrint('📁 [FILE INFO] Path: ${file.path ?? "null"}');
+        debugPrint('📁 [FILE INFO] Size: ${file.size} bytes');
+        debugPrint('📁 [FILE INFO] Has bytes: ${file.bytes != null}');
+
+        // Validate file extension
+        final validExtensions = ['obj', 'stl', 'glb', 'gltf'];
+        if (!validExtensions.contains(fileExtension)) {
+          _error =
+              'Unsupported file type: $fileExtension. Please select OBJ, STL, GLB, or GLTF files.';
+          debugPrint(
+            '❌ [VALIDATION ERROR] Unsupported file extension: $fileExtension',
+          );
+          notifyListeners();
+          return;
+        }
 
         // Handle file path vs bytes (web vs native)
         final filePath = kIsWeb ? 'web://$fileName' : (file.path ?? '');
@@ -67,15 +115,23 @@ class ObjectComparisonViewModel extends ChangeNotifier {
         // Validate file data
         if (!kIsWeb && file.path == null) {
           _error = 'Unable to access file path';
+          debugPrint(
+            '❌ [VALIDATION ERROR] File path is null on native platform',
+          );
           notifyListeners();
           return;
         }
 
         if (kIsWeb && file.bytes == null) {
           _error = 'Unable to read file data';
+          debugPrint(
+            '❌ [VALIDATION ERROR] File bytes are null on web platform',
+          );
           notifyListeners();
           return;
         }
+
+        debugPrint('📁 [VALIDATION PASSED] Creating object model...');
 
         // Create object model
         final newObject = ObjectModel(
@@ -94,21 +150,28 @@ class ObjectComparisonViewModel extends ChangeNotifier {
         if (objectType == 'A') {
           _objectA = newObject;
           _objectABytes = file.bytes;
+          debugPrint('✅ [SUCCESS] Object A loaded: $fileName');
         } else {
           _objectB = newObject;
           _objectBBytes = file.bytes;
           _clearHistory();
           _saveTransformToHistory();
+          debugPrint('✅ [SUCCESS] Object B loaded: $fileName');
         }
 
         notifyListeners();
+      } else {
+        debugPrint('⚠️ [EMPTY RESULT] Result has no files');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       _error = 'Failed to load $objectType object: $e';
+      debugPrint('❌ [FATAL ERROR] Error loading Object $objectType: $e');
+      debugPrint('❌ [STACK TRACE] $stackTrace');
       notifyListeners();
     } finally {
       _isLoading = false;
       notifyListeners();
+      debugPrint('📁 [END] Load operation completed for Object $objectType');
     }
   }
 

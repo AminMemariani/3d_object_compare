@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:vector_math/vector_math_64.dart' as vm;
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 import '../../domain/entities/object_3d.dart';
 
 /// Advanced 3D Viewer with interactive controls for rotation, scale, and position
@@ -92,15 +93,103 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
   }
 
   Widget _build3DView() {
-    // For now, show an enhanced placeholder with transform visualization
+    // Check if the file extension is supported for rendering
+    final ext = widget.object.fileExtension.toLowerCase();
+    final isRenderableFormat = (ext == 'glb' || ext == 'gltf');
+    final hasValidPath =
+        widget.object.filePath.isNotEmpty &&
+        !widget.object.filePath.startsWith('web://');
+
+    // If we have a renderable format and valid path, use ModelViewer
+    if (isRenderableFormat && hasValidPath && !kIsWeb) {
+      try {
+        return ModelViewer(
+          src: widget.object.filePath,
+          alt: widget.object.name,
+          autoRotate: true,
+          cameraControls: true,
+          backgroundColor: widget.backgroundColor,
+        );
+      } catch (e) {
+        // If ModelViewer fails, fall through to placeholder
+        debugPrint('ModelViewer error: $e');
+      }
+    }
+
+    // For web with GLB/GLTF, we'd need the bytes
+    if (isRenderableFormat && kIsWeb && widget.modelBytes != null) {
+      try {
+        // Note: model_viewer_plus on web requires a URL, not bytes
+        // You'd need to create a blob URL or host the file
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                widget.backgroundColor.withValues(alpha: 0.3),
+                widget.backgroundColor.withValues(alpha: 0.6),
+              ],
+            ),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.view_in_ar_rounded,
+                  size: 100,
+                  color: Colors.white70,
+                ),
+                const SizedBox(height: 24),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        widget.object.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Web 3D rendering requires file to be hosted',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.8),
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      } catch (e) {
+        debugPrint('Web ModelViewer error: $e');
+      }
+    }
+
+    // Show enhanced placeholder with transform visualization and file info
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            widget.backgroundColor.withOpacity(0.3),
-            widget.backgroundColor.withOpacity(0.6),
+            widget.backgroundColor.withValues(alpha: 0.3),
+            widget.backgroundColor.withValues(alpha: 0.6),
           ],
         ),
       ),
@@ -111,20 +200,20 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
             // 3D Icon with transform visualization
             Transform(
               transform: Matrix4.identity()
-                ..translate(_position.x * 50, _position.y * 50, 0.0)
+                ..translateByVector3(_position * 50.0)
                 ..rotateX(_rotation.x)
                 ..rotateY(_rotation.y)
                 ..rotateZ(_rotation.z)
-                ..scale(_scale.x, _scale.y, _scale.z),
+                ..scaleByVector3(_scale),
               alignment: Alignment.center,
               child: Container(
                 padding: const EdgeInsets.all(40),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
+                  color: Colors.white.withValues(alpha: 0.3),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       blurRadius: 30,
                       spreadRadius: 10,
                     ),
@@ -140,8 +229,9 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
             const SizedBox(height: 32),
             Container(
               padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withValues(alpha: 0.6),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -153,7 +243,67 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
                   ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      widget.object.fileExtension.toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  if (!isRenderableFormat) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.orange.withValues(alpha: 0.5),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: Colors.orange,
+                            size: 20,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Real-time 3D rendering requires GLB or GLTF format',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              fontSize: 11,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'File loaded successfully - use transform controls',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.7),
+                              fontSize: 10,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   _buildTransformInfo(),
                 ],

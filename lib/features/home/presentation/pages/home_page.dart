@@ -432,19 +432,60 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadObjectA(BuildContext context) async {
+    // DIAGNOSTIC: Verify button click is working
+    print('🔴 DEBUG: _loadObjectA called - button click IS working!');
+    debugPrint('🔴 DEBUG: _loadObjectA called - button click IS working!');
+    
     final viewModel = Provider.of<ObjectComparisonViewModel>(
       context,
       listen: false,
     );
 
+    // Show loading indicator
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text('Opening file picker...'),
+          ],
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+
+    print('🔴 DEBUG: About to call viewModel.loadObjectA()');
     await viewModel.loadObjectA();
+    print('🔴 DEBUG: viewModel.loadObjectA() returned');
+
+    if (!mounted) return;
+
+    // Clear the loading message
+    ScaffoldMessenger.of(context).clearSnackBars();
     
     if (viewModel.error != null) {
+      print('🔴 DEBUG: Error occurred: ${viewModel.error}');
       _showErrorMessage(context, viewModel.error!);
     } else if (viewModel.hasObjectA) {
+      print('🔴 DEBUG: Object A loaded successfully');
       _showSuccessMessage(context, 'Object A loaded successfully!');
       // Navigate to viewer to show the object
       Navigator.of(context).pushNamed('/compare-view');
+    } else {
+      print('🔴 DEBUG: No object loaded, no error - user cancelled');
+      // User cancelled file picker - show subtle message
+      _showInfoMessage(context, 'File selection cancelled');
     }
   }
 
@@ -454,7 +495,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       listen: false,
     );
 
+    // Show loading indicator
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text('Opening file picker...'),
+          ],
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+
     await viewModel.loadObjectB();
+    
+    if (!mounted) return;
+
+    // Clear the loading message
+    ScaffoldMessenger.of(context).clearSnackBars();
     
     if (viewModel.error != null) {
       _showErrorMessage(context, viewModel.error!);
@@ -462,6 +532,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       _showSuccessMessage(context, 'Object B loaded successfully!');
       // Navigate to viewer to show the object
       Navigator.of(context).pushNamed('/compare-view');
+    } else {
+      // User cancelled file picker - show subtle message
+      _showInfoMessage(context, 'File selection cancelled');
     }
   }
 
@@ -509,6 +582,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _showInfoMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.info_outline, color: Colors.white, size: 20),
+            const SizedBox(width: 8),
+            Text(message),
+          ],
+        ),
+        backgroundColor: Colors.grey.shade600,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
