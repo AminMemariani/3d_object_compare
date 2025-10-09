@@ -1,5 +1,5 @@
 name: flutter_3d_app
-description: "3D Object Viewer - Load, view, and compare 3D objects with Procrustes analysis"
+description: "3D Object Compare - Load, view, and compare 3D objects with Procrustes analysis"
 homepage: https://github.com/AminMemariani/3d_object_compare
 repository: https://github.com/AminMemariani/3d_object_compare
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -67,6 +67,10 @@ dev_dependencies:
   # Isar code generation
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.13
+
+# Dependency overrides to ensure version compatibility
+dependency_overrides:
+  vector_math: ^2.2.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
