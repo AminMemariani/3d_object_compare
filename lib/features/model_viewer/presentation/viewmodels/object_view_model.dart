@@ -46,7 +46,7 @@ class ObjectViewModel extends BaseViewModel with AsyncOperationMixin {
   Future<void> _loadObject(String objectType) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['obj', 'stl'],
+      allowedExtensions: ['obj', 'stl', 'glb', 'gltf'],
       withData: kIsWeb, // Request bytes on web
     );
 

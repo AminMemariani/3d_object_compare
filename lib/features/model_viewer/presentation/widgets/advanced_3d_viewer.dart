@@ -255,55 +255,72 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
       }
     }
 
-    // For web with GLB/GLTF, we'd need the bytes
-    if (isRenderableFormat && kIsWeb && widget.modelBytes != null) {
-      try {
-        // Note: model_viewer_plus on web requires a URL, not bytes
-        // You'd need to create a blob URL or host the file
-        return Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                widget.backgroundColor.withValues(alpha: 0.3),
-                widget.backgroundColor.withValues(alpha: 0.6),
-              ],
-            ),
+    // For web with GLB/GLTF - show helpful message about hosting requirement
+    if (isRenderableFormat && kIsWeb) {
+      return Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue.withValues(alpha: 0.1),
+              Colors.cyan.withValues(alpha: 0.1),
+            ],
           ),
-          child: Center(
+        ),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(32),
+            margin: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.7),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.cyan.withValues(alpha: 0.5),
+                width: 2,
+              ),
+            ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  Icons.view_in_ar_rounded,
-                  size: 100,
-                  color: Colors.white70,
+                  Icons.cloud_upload_rounded, size: 64, color: Colors.cyan,
                 ),
                 const SizedBox(height: 24),
+                Text(
+                  'GLB File Loaded: ${widget.object.name}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
                 Container(
-                  padding: const EdgeInsets.all(20),
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.cyan.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
                     children: [
-                      Text(
-                        widget.object.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      Icon(Icons.info_outline, color: Colors.cyan, size: 32),
                       const SizedBox(height: 12),
                       Text(
-                        'Web 3D rendering requires file to be hosted',
+                        'Web Platform Requirement',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'For web 3D rendering, the model file must be hosted on a server.\n\n'
+                        'Currently loading from local file system is not supported for security reasons.',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.9),
                           fontSize: 14,
                         ),
                         textAlign: TextAlign.center,
@@ -311,13 +328,61 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Solutions',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        '1. Host your GLB file on a web server\n'
+                        '2. Use hosted sample models (see docs)\n'
+                        '3. Use native apps (iOS/Android) for local files',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontSize: 12,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '✅ Analysis features work on all platforms',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 12,
+                  ),
+                ),
               ],
             ),
           ),
-        );
-      } catch (e) {
-        debugPrint('Web ModelViewer error: $e');
-      }
+        ),
+      );
     }
 
     // Show enhanced placeholder with transform visualization and file info

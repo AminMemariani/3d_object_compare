@@ -49,7 +49,7 @@ class ObjectLoaderProvider extends ChangeNotifier {
 
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['obj', 'stl'],
+        allowedExtensions: ['obj', 'stl', 'glb', 'gltf'],
         allowMultiple: false,
         withData: kIsWeb, // Request bytes on web
       );

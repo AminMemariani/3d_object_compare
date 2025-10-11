@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../mvvm/viewmodels/object_comparison_viewmodel.dart';
-import '../../../../mvvm/models/object_model.dart';
+import '../providers/object_loader_provider.dart';
 import '../widgets/advanced_3d_viewer.dart';
+import '../widgets/procrustes_results_card.dart';
+import '../widgets/similarity_gauge.dart';
 import '../../domain/entities/object_3d.dart';
 
 class CompareViewPage extends StatefulWidget {
@@ -139,11 +140,11 @@ class _CompareViewPageState extends State<CompareViewPage>
   }
 
   Widget _buildComparisonView(BuildContext context) {
-    return Consumer<ObjectComparisonViewModel>(
-      builder: (context, viewModel, child) {
+    return Consumer<ObjectLoaderProvider>(
+      builder: (context, objectProvider, child) {
         // If no objects loaded, show empty state
-        if (!viewModel.hasObjectA && !viewModel.hasObjectB) {
-          return _buildEmptyState(context, viewModel);
+        if (!objectProvider.hasObjectA && !objectProvider.hasObjectB) {
+          return _buildEmptyState(context, objectProvider);
         }
 
         return Container(
@@ -152,29 +153,29 @@ class _CompareViewPageState extends State<CompareViewPage>
             children: [
               // Object A View
               Expanded(
-                child: viewModel.hasObjectA
+                child: objectProvider.hasObjectA
                     ? _buildObjectView(
                         context,
-                        viewModel.objectA!,
+                        objectProvider.objectA!,
                         'Object A',
                         Colors.blue,
                       )
                     : _buildPlaceholderView(context, 'Object A', Colors.blue, () {
-                        viewModel.loadObjectA();
+                          objectProvider.loadObjectA();
                       }),
               ),
               const SizedBox(width: 16),
               // Object B View
               Expanded(
-                child: viewModel.hasObjectB
+                child: objectProvider.hasObjectB
                     ? _buildObjectView(
                         context,
-                        viewModel.objectB!,
+                        objectProvider.objectB!,
                         'Object B',
                         Colors.purple,
                       )
                     : _buildPlaceholderView(context, 'Object B', Colors.purple, () {
-                        viewModel.loadObjectB();
+                          objectProvider.loadObjectB();
                       }),
               ),
             ],
@@ -184,7 +185,10 @@ class _CompareViewPageState extends State<CompareViewPage>
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, ObjectComparisonViewModel viewModel) {
+  Widget _buildEmptyState(
+    BuildContext context,
+    ObjectLoaderProvider objectProvider,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -209,13 +213,13 @@ class _CompareViewPageState extends State<CompareViewPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FilledButton.icon(
-                onPressed: () => viewModel.loadObjectA(),
+                onPressed: () => objectProvider.loadObjectA(),
                 icon: const Icon(Icons.upload_rounded),
                 label: const Text('Load Object A'),
               ),
               const SizedBox(width: 16),
               FilledButton.icon(
-                onPressed: () => viewModel.loadObjectB(),
+                onPressed: () => objectProvider.loadObjectB(),
                 icon: const Icon(Icons.upload_rounded),
                 label: const Text('Load Object B'),
               ),
@@ -286,25 +290,13 @@ class _CompareViewPageState extends State<CompareViewPage>
 
   Widget _buildObjectView(
     BuildContext context,
-    ObjectModel object,
+    Object3D object,
     String label,
     Color accentColor,
   ) {
-    final viewModel = Provider.of<ObjectComparisonViewModel>(context, listen: false);
-    
-    // Convert ObjectModel to Object3D for Advanced3DViewer (temporary compatibility)
-    final object3d = Object3D(
-      id: object.id,
-      name: object.name,
-      filePath: object.filePath,
-      fileExtension: object.fileExtension,
-      position: object.position,
-      rotation: object.rotation,
-      scale: object.scale,
-      color: Color3D(object.color.red, object.color.green, object.color.blue),
-      opacity: object.opacity,
-      createdAt: object.createdAt,
-      lastModified: object.lastModified,
+    final objectProvider = Provider.of<ObjectLoaderProvider>(
+      context,
+      listen: false,
     );
     
     return Container(
@@ -378,7 +370,7 @@ class _CompareViewPageState extends State<CompareViewPage>
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Advanced3DViewer(
-                  object: object3d,
+                  object: object,
                   backgroundColor: Color.fromRGBO(
                     (object.color.red * 255).round(),
                     (object.color.green * 255).round(),
@@ -388,23 +380,23 @@ class _CompareViewPageState extends State<CompareViewPage>
                   showControls: true,
                   onPositionChanged: (position) {
                     if (label == 'Object A') {
-                      viewModel.updateObjectAPosition(position);
+                      objectProvider.updateObjectAPosition(position);
                     } else {
-                      viewModel.updateObjectBPosition(position);
+                      objectProvider.updateObjectBPosition(position);
                     }
                   },
                   onRotationChanged: (rotation) {
                     if (label == 'Object A') {
-                      viewModel.updateObjectARotation(rotation);
+                      objectProvider.updateObjectARotation(rotation);
                     } else {
-                      viewModel.updateObjectBRotation(rotation);
+                      objectProvider.updateObjectBRotation(rotation);
                     }
                   },
                   onScaleChanged: (scale) {
                     if (label == 'Object A') {
-                      viewModel.updateObjectAScale(scale);
+                      objectProvider.updateObjectAScale(scale);
                     } else {
-                      viewModel.updateObjectBScale(scale);
+                      objectProvider.updateObjectBScale(scale);
                     }
                   },
                 ),
@@ -417,73 +409,103 @@ class _CompareViewPageState extends State<CompareViewPage>
   }
 
   Widget _buildComparisonControls(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: _buildControlButton(
-                  context,
-                  'Synchronize',
-                  Icons.sync_rounded,
-                  () => _synchronizeRotation(),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildControlButton(
-                  context,
-                  'Reset View',
-                  Icons.refresh_rounded,
-                  () => _resetViews(),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildControlButton(
-                  context,
-                  'Export',
-                  Icons.download_rounded,
-                  () => _exportComparison(),
-                ),
+    return Consumer<ObjectLoaderProvider>(
+      builder: (context, objectProvider, child) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 20,
+                offset: const Offset(0, -4),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Consumer<ObjectComparisonViewModel>(
-            builder: (context, viewModel, child) {
-              return Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              
+              // Alignment Score Gauge
+              if (objectProvider.hasObjectA && objectProvider.hasObjectB)
+                _buildAlignmentScoreGauge(context, objectProvider),
+
+              if (objectProvider.hasObjectA && objectProvider.hasObjectB)
+                const SizedBox(height: 16),
+
+              // Procrustes Analysis Button or Progress
+              if (objectProvider.isAnalyzing)
+                _buildAnalysisProgress(context, objectProvider)
+              else if (objectProvider.hasObjectA && objectProvider.hasObjectB)
+                FilledButton.icon(
+                  onPressed: () => _runProcrustesAnalysis(objectProvider),
+                  icon: const Icon(Icons.analytics_rounded),
+                  label: const Text('Run Procrustes Analysis'),
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                  ),
+                ),
+
+              if (objectProvider.hasObjectA && objectProvider.hasObjectB)
+                const SizedBox(height: 16),
+
+              // Control Buttons Row
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildControlButton(
+                      context,
+                      'Auto Align',
+                      Icons.auto_fix_high_rounded,
+                      () => _autoAlign(objectProvider),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildControlButton(
+                      context,
+                      'Reset',
+                      Icons.refresh_rounded,
+                      () => _resetObjectB(objectProvider),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildControlButton(
+                      context,
+                      'Export',
+                      Icons.download_rounded,
+                      () => _exportComparison(objectProvider),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              
+              // Object Info Cards
+              Row(
                 children: [
                   Expanded(
                     child: _buildInfoCard(
                       context,
                       'Object A',
-                      viewModel.hasObjectA ? viewModel.objectA!.name : 'Not loaded',
+                      objectProvider.hasObjectA
+                          ? objectProvider.objectA!.name
+                          : 'Not loaded',
                       Colors.blue,
                     ),
                   ),
@@ -492,16 +514,32 @@ class _CompareViewPageState extends State<CompareViewPage>
                     child: _buildInfoCard(
                       context,
                       'Object B',
-                      viewModel.hasObjectB ? viewModel.objectB!.name : 'Not loaded',
+                      objectProvider.hasObjectB
+                          ? objectProvider.objectB!.name
+                          : 'Not loaded',
                       Colors.purple,
                     ),
                   ),
                 ],
-              );
-            },
+              ),
+
+              // Procrustes Results Card
+              if (objectProvider.showResultsCard &&
+                  objectProvider.procrustesResult != null &&
+                  objectProvider.objectA != null &&
+                  objectProvider.objectB != null) ...[
+                const SizedBox(height: 16),
+                ProcrustesResultsCard(
+                  result: objectProvider.procrustesResult!,
+                  objectA: objectProvider.objectA!,
+                  objectB: objectProvider.objectB!,
+                  onClose: () => objectProvider.hideResultsCard(),
+                ),
+              ],
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -584,14 +622,152 @@ class _CompareViewPageState extends State<CompareViewPage>
     );
   }
 
-  void _synchronizeRotation() {
+  Widget _buildAlignmentScoreGauge(
+    BuildContext context,
+    ObjectLoaderProvider objectProvider,
+  ) {
+    final score = objectProvider.getAlignmentScore();
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Alignment Score',
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 12),
+          SimilarityGauge(score: score, size: 80),
+          const SizedBox(height: 8),
+          Text(
+            '${score.toStringAsFixed(1)}%',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: _getScoreColor(score),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAnalysisProgress(
+    BuildContext context,
+    ObjectLoaderProvider objectProvider,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          SizedBox(
+            width: 60,
+            height: 60,
+            child: CircularProgressIndicator(
+              value: objectProvider.analysisProgress,
+              strokeWidth: 6,
+              backgroundColor: Colors.white.withValues(alpha: 0.3),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Analyzing alignment...',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${(objectProvider.analysisProgress * 100).toStringAsFixed(0)}%',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getScoreColor(double score) {
+    if (score >= 80) return Colors.green;
+    if (score >= 60) return Colors.lightGreen;
+    if (score >= 40) return Colors.orange;
+    return Colors.red;
+  }
+
+  Future<void> _runProcrustesAnalysis(
+    ObjectLoaderProvider objectProvider,
+  ) async {
+    await objectProvider.performProcrustesAnalysis();
+
+    if (!mounted) return;
+
+    if (objectProvider.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              Expanded(child: Text(objectProvider.error!)),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+    } else if (objectProvider.procrustesResult != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.white, size: 20),
+              SizedBox(width: 8),
+              Text('Procrustes analysis complete!'),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+    }
+  }
+
+  void _autoAlign(ObjectLoaderProvider objectProvider) {
+    final scoreBefore = objectProvider.getAlignmentScore();
+    objectProvider.autoAlignObjectB();
+    final scoreAfter = objectProvider.getAlignmentScore();
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Row(
+        content: Row(
           children: [
-            Icon(Icons.sync_rounded, color: Colors.white, size: 20),
-            SizedBox(width: 8),
-            Text('Rotation synchronized'),
+            const Icon(
+              Icons.auto_fix_high_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Auto-aligned: ${scoreBefore.toStringAsFixed(1)}% → ${scoreAfter.toStringAsFixed(1)}%',
+              ),
+            ),
           ],
         ),
         backgroundColor: Colors.green,
@@ -601,14 +777,16 @@ class _CompareViewPageState extends State<CompareViewPage>
     );
   }
 
-  void _resetViews() {
+  void _resetObjectB(ObjectLoaderProvider objectProvider) {
+    objectProvider.resetObjectB();
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Row(
           children: [
             Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
             SizedBox(width: 8),
-            Text('Views reset'),
+            Text('Object B reset to default'),
           ],
         ),
         backgroundColor: Colors.blue,
@@ -618,20 +796,31 @@ class _CompareViewPageState extends State<CompareViewPage>
     );
   }
 
-  void _exportComparison() {
+  void _exportComparison(ObjectLoaderProvider objectProvider) {
+    // TODO: Implement actual export functionality
+    final metrics = objectProvider.getSimilarityMetrics();
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Row(
+        content: Row(
           children: [
-            Icon(Icons.download_rounded, color: Colors.white, size: 20),
-            SizedBox(width: 8),
-            Text('Comparison exported'),
+            const Icon(Icons.download_rounded, color: Colors.white, size: 20),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                metrics != null
+                    ? 'Comparison data exported (RMSE: ${metrics.rootMeanSquareError.toStringAsFixed(4)})'
+                    : 'Comparison exported',
+              ),
+            ),
           ],
         ),
         backgroundColor: Colors.orange,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
 }
+

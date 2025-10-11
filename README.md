@@ -41,6 +41,16 @@ A professional-grade Flutter application designed to help researchers, professio
 - **Export Results**: JSON and CSV export capabilities for integration with research workflows
 - **Superimposed Viewing**: Overlay multiple objects with adjustable opacity for visual comparison
 
+### Comparison Tools
+- **Side-by-Side Comparison**: View two 3D objects simultaneously with independent controls
+- **Alignment Score Gauge**: Real-time visual feedback on how well objects are aligned (0-100%)
+- **Procrustes Analysis**: One-click statistical alignment with progress tracking
+- **Auto-Align**: Instantly position Object B to match Object A's transforms
+- **Reset Controls**: Return objects to default positions
+- **Similarity Metrics Card**: Detailed breakdown of RMSE, standard deviation, and alignment quality
+- **Transform History**: Undo/redo capability for all transformations
+- **Export Analysis**: Save comparison results as JSON or CSV files
+
 ### Scientific Analysis Tools
 - **Statistical Alignment**: Automatically align objects using Procrustes transformation
 - **Quantitative Metrics**: Precise measurements of shape differences and similarities
@@ -166,14 +176,18 @@ flutter run
 ### Quick Start Guide
 
 1. **Load 3D Objects**: Tap "Load Object A" and "Load Object B" to select 3D files
+   - **Supported formats**: OBJ, STL, GLB, GLTF
    - For full 3D rendering: Use **.glb** or **.gltf** files
    - For data analysis only: Use **.obj** or **.stl** files (shows placeholder)
-2. **Navigate to Viewer**: Tap "View Objects" to open the 3D viewer
-3. **Transform Objects**: Use the control panel to align Object B with Object A
-4. **Run Analysis**: Tap "Compare" to perform Procrustes analysis
-5. **Export Results**: Save analysis results as JSON or CSV files
+2. **Navigate to Comparison View**: Automatically opens after loading both objects
+3. **View Alignment Score**: Real-time gauge shows how well objects are aligned
+4. **Transform Objects**: Use controls to manually adjust position/rotation/scale
+5. **Auto-Align**: Click "Auto Align" for instant alignment
+6. **Run Analysis**: Click "Run Procrustes Analysis" for statistical alignment
+7. **View Results**: Detailed metrics card appears with RMSE, similarity score, etc.
+8. **Export Results**: Save analysis results as JSON or CSV files
 
-> **💡 Tip**: For the best visual experience, use GLB files. See the [Supported File Formats](#supported-file-formats) section for conversion tools.
+> **💡 Tip**: For the best visual experience, use GLB or GLTF files. See the [Supported File Formats](#supported-file-formats) section for conversion tools.
 
 ### Use Case Examples
 
@@ -471,6 +485,17 @@ This tool implements **Generalized Procrustes Analysis (GPA)**, a statistical me
 - **.glb**: GL Transmission Format Binary - Optimized for web and real-time rendering
 - **.gltf**: GL Transmission Format JSON - Modern 3D format with full material support
 
+**Platform Support for 3D Rendering:**
+
+| Platform | GLB/GLTF Rendering | Recommendation |
+|----------|-------------------|----------------|
+| **Web (Chrome, Firefox, Safari)** | ✅ Full Support | Requires hosted files (not local) |
+| **iOS (iPhone, iPad)** | ✅ Full Support | Local files supported |
+| **Android** | ✅ Full Support | Local files supported |
+| **macOS Desktop** | ⚠️ Limited | Use web version: `flutter run -d chrome` |
+| **Windows Desktop** | ⚠️ Limited | Use web version recommended |
+| **Linux Desktop** | ⚠️ Limited | Use web version recommended |
+
 **Features:**
 - ✅ Full 3D visualization with textures and materials
 - ✅ Interactive camera controls (orbit, zoom, pan)
@@ -478,6 +503,11 @@ This tool implements **Generalized Procrustes Analysis (GPA)**, a statistical me
 - ✅ WebGL-optimized rendering
 - ✅ AR support (iOS/Android)
 - ✅ Cross-platform compatibility
+
+**Platform-Specific Notes:**
+- **macOS Desktop**: Due to WebView limitations in `model_viewer_plus`, 3D rendering is not available. Use `flutter run -d chrome` for full rendering capabilities.
+- **Web Platform**: Requires files to be hosted on a server or use data URLs. Local file system access is restricted for security.
+- **Mobile (iOS/Android)**: Full support with local file loading and WebView-based rendering.
 
 #### 📐 Data Analysis Only (OBJ/STL)
 **Supported for Analysis:**

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../mvvm/viewmodels/object_comparison_viewmodel.dart';
+import '../../../model_viewer/presentation/providers/object_loader_provider.dart';
 import '../../../tutorial/presentation/widgets/tutorial_button.dart';
 import '../../../tutorial/presentation/widgets/tutorial_overlay.dart';
 import '../../../tutorial/presentation/providers/tutorial_provider.dart';
@@ -435,8 +435,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     // DIAGNOSTIC: Verify button click is working
     print('🔴 DEBUG: _loadObjectA called - button click IS working!');
     debugPrint('🔴 DEBUG: _loadObjectA called - button click IS working!');
-    
-    final viewModel = Provider.of<ObjectComparisonViewModel>(
+
+    final objectProvider = Provider.of<ObjectLoaderProvider>(
       context,
       listen: false,
     );
@@ -465,19 +465,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
 
-    print('🔴 DEBUG: About to call viewModel.loadObjectA()');
-    await viewModel.loadObjectA();
-    print('🔴 DEBUG: viewModel.loadObjectA() returned');
+    print('🔴 DEBUG: About to call objectProvider.loadObjectA()');
+    await objectProvider.loadObjectA();
+    print('🔴 DEBUG: objectProvider.loadObjectA() returned');
 
     if (!mounted) return;
 
     // Clear the loading message
     ScaffoldMessenger.of(context).clearSnackBars();
-    
-    if (viewModel.error != null) {
-      print('🔴 DEBUG: Error occurred: ${viewModel.error}');
-      _showErrorMessage(context, viewModel.error!);
-    } else if (viewModel.hasObjectA) {
+
+    if (objectProvider.error != null) {
+      print('🔴 DEBUG: Error occurred: ${objectProvider.error}');
+      _showErrorMessage(context, objectProvider.error!);
+    } else if (objectProvider.hasObjectA) {
       print('🔴 DEBUG: Object A loaded successfully');
       _showSuccessMessage(context, 'Object A loaded successfully!');
       // Navigate to viewer to show the object
@@ -490,7 +490,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadObjectB(BuildContext context) async {
-    final viewModel = Provider.of<ObjectComparisonViewModel>(
+    final objectProvider = Provider.of<ObjectLoaderProvider>(
       context,
       listen: false,
     );
@@ -519,16 +519,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
 
-    await viewModel.loadObjectB();
-    
+    await objectProvider.loadObjectB();
+
     if (!mounted) return;
 
     // Clear the loading message
     ScaffoldMessenger.of(context).clearSnackBars();
-    
-    if (viewModel.error != null) {
-      _showErrorMessage(context, viewModel.error!);
-    } else if (viewModel.hasObjectB) {
+
+    if (objectProvider.error != null) {
+      _showErrorMessage(context, objectProvider.error!);
+    } else if (objectProvider.hasObjectB) {
       _showSuccessMessage(context, 'Object B loaded successfully!');
       // Navigate to viewer to show the object
       Navigator.of(context).pushNamed('/compare-view');
