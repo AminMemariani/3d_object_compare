@@ -834,42 +834,151 @@ class _SuperimposedViewerPageState extends State<SuperimposedViewerPage>
           Row(
             children: [
               Icon(
-                Icons.check_circle_rounded,
-                color: _getScoreColor(metrics.similarityScore),
+                Icons.analytics_rounded,
+                color: Theme.of(context).colorScheme.primary,
                 size: 20,
               ),
               const SizedBox(width: 8),
               Text(
-                'Similarity: ${metrics.similarityScore.toStringAsFixed(1)}%',
+                'Object Similarity',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: _getScoreColor(metrics.similarityScore),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.blue.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.straighten_rounded,
+                            color: Colors.blue,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Min Dist',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                  fontSize: 11,
+                                ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        metrics.minimumDistance.toStringAsFixed(4),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                              fontFamily: 'monospace',
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.purple.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.purple.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.show_chart_rounded,
+                            color: Colors.purple,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Std Dev',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                  fontSize: 11,
+                                ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        metrics.standardDeviation.toStringAsFixed(4),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.purple,
+                              fontFamily: 'monospace',
+                            ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            metrics.qualityDescription,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(
+                context,
+              ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  _getQualityIcon(metrics.rootMeanSquareError),
+                  color: _getScoreColor(metrics.similarityScore),
+                  size: 16,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  metrics.alignmentStatus,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w500),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           _buildMetricRow(
             context,
             'RMSE',
-            metrics.rootMeanSquareError.toStringAsFixed(3),
-          ),
-          _buildMetricRow(
-            context,
-            'Min Distance',
-            metrics.minimumDistance.toStringAsFixed(3),
-          ),
-          _buildMetricRow(
-            context,
-            'Std Dev',
-            metrics.standardDeviation.toStringAsFixed(3),
+            metrics.rootMeanSquareError.toStringAsFixed(4),
           ),
           _buildMetricRow(context, 'Points', metrics.numberOfPoints.toString()),
         ],
@@ -904,6 +1013,13 @@ class _SuperimposedViewerPageState extends State<SuperimposedViewerPage>
     if (score >= 85) return Colors.green;
     if (score >= 70) return Colors.orange;
     return Colors.red;
+  }
+
+  IconData _getQualityIcon(double rmse) {
+    if (rmse <= 0.1) return Icons.check_circle_rounded;
+    if (rmse <= 0.5) return Icons.verified_rounded;
+    if (rmse <= 1.0) return Icons.info_rounded;
+    return Icons.warning_rounded;
   }
 
   Widget _buildResultsCard(BuildContext context) {

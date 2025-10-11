@@ -10,6 +10,8 @@
 
 A professional-grade Flutter application designed to help researchers, professionals, and developers in **geology**, **gaming**, and **medical fields** compare and analyze 3D objects with advanced Procrustes analysis. Built with clean architecture principles and supporting all major platforms.
 
+> 📋 **Project Progress**: See [PROJECT_STATUS.md](PROJECT_STATUS.md) for complete TODO list, recent updates, and development roadmap.
+
 ## 🎯 Purpose & Applications
 
 ### Geology & Earth Sciences

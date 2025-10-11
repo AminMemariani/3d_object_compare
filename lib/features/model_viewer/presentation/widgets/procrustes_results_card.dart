@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/procrustes_result.dart';
 import '../../domain/entities/object_3d.dart';
 import '../../domain/services/export_service.dart';
-import 'similarity_gauge.dart';
 
 /// A comprehensive results card for displaying Procrustes analysis results
 class ProcrustesResultsCard extends StatefulWidget {
@@ -181,48 +180,128 @@ class _ProcrustesResultsCardState extends State<ProcrustesResultsCard>
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            'Object Similarity',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 20),
           Row(
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Similarity Score',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      metrics.qualityDescription,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: _getScoreColor(widget.result.similarityScore),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      metrics.alignmentStatus,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
+                child: _buildSimilarityMetric(
+                  context,
+                  'Min Distance',
+                  widget.result.minimumDistance,
+                  Icons.straighten_rounded,
+                  Colors.blue,
                 ),
               ),
-              SimilarityGauge(
-                score: widget.result.similarityScore,
-                size: 100,
-                strokeWidth: 6,
-                color: _getScoreColor(widget.result.similarityScore),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildSimilarityMetric(
+                  context,
+                  'Std Deviation',
+                  widget.result.standardDeviation,
+                  Icons.show_chart_rounded,
+                  Colors.purple,
+                ),
               ),
             ],
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Theme.of(
+                context,
+              ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.2),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  _getQualityIcon(widget.result.rootMeanSquareError),
+                  color: _getScoreColor(widget.result.similarityScore),
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    metrics.alignmentStatus,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildSimilarityMetric(
+    BuildContext context,
+    String label,
+    double value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color, size: 20),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value.toStringAsFixed(6),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'monospace',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _getQualityIcon(double rmse) {
+    if (rmse <= 0.1) return Icons.check_circle_rounded;
+    if (rmse <= 0.5) return Icons.verified_rounded;
+    if (rmse <= 1.0) return Icons.info_rounded;
+    return Icons.warning_rounded;
   }
 
   Widget _buildMetricsSection(BuildContext context) {
