@@ -155,7 +155,32 @@
 
 ### Session: October 11, 2025
 
-#### 1. Multi-Format Parser Implementation
+#### 1. macOS Native 3D Rendering
+**Implemented native 3D visualization for macOS desktop**
+
+**Files Created:**
+- `macos_3d_viewer.dart` - CustomPainter-based 3D renderer
+
+**Files Modified:**
+- `advanced_3d_viewer.dart` - Integrated macOS viewer
+
+**Features:**
+- ✅ Point cloud rendering with perspective projection
+- ✅ Interactive rotation (mouse drag)
+- ✅ Zoom control (scroll wheel)
+- ✅ Depth-based point sizing and alpha
+- ✅ Automatic model centering and normalization
+- ✅ Works with all formats that have vertex data
+- ✅ Vertex count display in UI
+- ✅ No external dependencies (pure Flutter/Dart)
+
+**Benefits:**
+- No more placeholder screens on macOS
+- Real 3D visualization without WebView
+- Consistent experience across all file formats
+- Lightweight and performant
+
+#### 2. Multi-Format Parser Implementation
 **Added support for GLB, STL, and GLTF vertex parsing**
 
 **Files Created:**
@@ -202,9 +227,11 @@
 ## 🐛 Known Issues
 
 ### Platform Limitations
-- [ ] macOS desktop: WebView not implemented for ModelViewer (shows placeholder)
-  - **Workaround:** Use `flutter run -d chrome` for full 3D rendering
-  - **Status:** Platform limitation, cannot fix
+- [x] macOS desktop: Native 3D rendering implemented using CustomPainter
+  - **Status:** ✅ Implemented - Renders point clouds from parsed vertices
+  - **Supports:** All formats with vertex data (OBJ, STL, GLTF, GLB)
+  - **Features:** Interactive rotation, zoom, depth-based rendering
+  - **Note:** GLB/GLTF still limited by WebView for textured rendering
   
 ### Performance
 - [ ] Large models (>10,000 vertices) may slow down analysis

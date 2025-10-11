@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart'
 import 'package:vector_math/vector_math_64.dart' as vm;
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import '../../domain/entities/object_3d.dart';
+import 'macos_3d_viewer.dart';
 
 /// Advanced 3D Viewer with interactive controls for rotation, scale, and position
 class Advanced3DViewer extends StatefulWidget {
@@ -109,7 +110,16 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
 
     if (isRenderableFormat && hasValidPath) {
       if (isMacOSDesktop) {
-        // Show informative placeholder for macOS desktop
+        // Use native macOS 3D viewer for OBJ files
+        final ext = widget.object.fileExtension.toLowerCase();
+        if (ext == 'obj') {
+          return MacOS3DViewer(
+            object: widget.object,
+            backgroundColor: widget.backgroundColor,
+          );
+        }
+
+        // For GLB/GLTF, show informative message about OBJ conversion
         return Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -168,8 +178,8 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Full 3D rendering is not available on macOS desktop '
-                          'due to WebView limitations in model_viewer_plus.',
+                          'GLB/GLTF rendering requires WebView which is not available on macOS desktop. '
+                          'Convert to OBJ format for native 3D rendering.',
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.9),
                             fontSize: 14,
@@ -221,14 +231,21 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    '✅ Full support on: iOS, Android, Web',
+                    '✅ GLB/GLTF: iOS, Android, Web',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 12,
                     ),
                   ),
                   Text(
-                    '✅ Analysis features: All platforms',
+                    '✅ OBJ: All platforms (including macOS)',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    '✅ Analysis: All platforms, all formats',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 12,
