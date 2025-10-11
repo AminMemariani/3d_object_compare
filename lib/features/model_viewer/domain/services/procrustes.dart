@@ -13,9 +13,22 @@ class Procrustes {
   ///
   /// Returns [ProcrustesResult] containing transformation parameters and metrics
   static ProcrustesResult align(Object3D objectA, Object3D objectB) {
-    // Generate sample points for the objects
-    final pointsA = _generateObjectPoints(objectA);
-    final pointsB = _generateObjectPoints(objectB);
+    // Use actual mesh vertices if available, otherwise use placeholder
+    final pointsA = objectA.vertices != null && objectA.vertices!.isNotEmpty
+        ? objectA.vertices!
+        : _generateObjectPoints(objectA);
+
+    final pointsB = objectB.vertices != null && objectB.vertices!.isNotEmpty
+        ? objectB.vertices!
+        : _generateObjectPoints(objectB);
+
+    print('🔬 Procrustes Analysis:');
+    print(
+      '   Object A: ${pointsA.length} vertices ${objectA.vertices != null ? "(real mesh data)" : "(placeholder cube)"}',
+    );
+    print(
+      '   Object B: ${pointsB.length} vertices ${objectB.vertices != null ? "(real mesh data)" : "(placeholder cube)"}',
+    );
 
     return ProcrustesAnalysis.align(pointsA, pointsB);
   }
@@ -79,16 +92,21 @@ class Procrustes {
     );
   }
 
-  /// Generates sample points for a 3D object
+  /// Generates placeholder cube points for a 3D object
   ///
-  /// This is a simplified implementation that generates points based on
-  /// the object's transform. In a real implementation, you would load
-  /// the actual vertex data from the .obj or .stl file.
+  /// This is used as a fallback when actual mesh vertices are not available.
+  /// Used for: GLB/GLTF files (can't easily parse), STL files (not yet implemented),
+  /// or when file parsing fails.
+  ///
+  /// WARNING: Comparing placeholder cubes will give misleading similarity scores!
   static List<Vector3> _generateObjectPoints(Object3D object) {
     final points = <Vector3>[];
 
+    print('⚠️ WARNING: Using placeholder cube vertices for ${object.name}');
+    print('   This will NOT give accurate comparison results!');
+    print('   Use OBJ files for proper analysis.');
+
     // Generate a simple geometric shape (cube) as a placeholder
-    // In a real implementation, this would load actual mesh vertices
     final vertices = [
       Vector3(-1, -1, -1),
       Vector3(1, -1, -1),

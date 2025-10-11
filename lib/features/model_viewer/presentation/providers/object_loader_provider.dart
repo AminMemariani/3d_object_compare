@@ -5,6 +5,7 @@ import '../../domain/entities/object_3d.dart';
 import '../../domain/entities/procrustes_result.dart';
 import '../../domain/services/procrustes.dart';
 import '../../domain/services/procrustes_isolate_service.dart';
+import '../../domain/services/implementations/model_parser_factory.dart';
 
 class ObjectLoaderProvider extends ChangeNotifier {
   Object3D? _objectA;
@@ -49,7 +50,7 @@ class ObjectLoaderProvider extends ChangeNotifier {
 
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['obj', 'stl', 'glb', 'gltf'],
+        allowedExtensions: ModelParserFactory.getSupportedExtensions(),
         allowMultiple: false,
         withData: kIsWeb, // Request bytes on web
       );
@@ -74,11 +75,44 @@ class ObjectLoaderProvider extends ChangeNotifier {
           return;
         }
         
+        // Parse 3D file to extract actual vertex data
+        List<Vector3>? vertices;
+        final extension = file.extension?.toLowerCase() ?? '';
+
+        if (ModelParserFactory.isExtensionSupported(extension)) {
+          try {
+            print('📐 Parsing ${extension.toUpperCase()} file: ${file.name}');
+            vertices = await ModelParserFactory.parseFile(
+              fileExtension: extension,
+              filePath: kIsWeb ? null : filePath,
+              fileBytes: kIsWeb ? file.bytes : null,
+              fileName: file.name,
+            );
+
+            if (vertices.isNotEmpty) {
+              print('✅ Loaded ${vertices.length} vertices from ${file.name}');
+            } else {
+              print(
+                '⚠️ No vertices found in ${extension.toUpperCase()} file, using placeholder',
+              );
+            }
+          } catch (e) {
+            print(
+              '⚠️ Error parsing ${extension.toUpperCase()} file: $e - using placeholder vertices',
+            );
+          }
+        } else {
+          print(
+            '⚠️ Unsupported file format: $extension - using placeholder vertices',
+          );
+        }
+        
         final object = Object3D(
           id: '${objectType.toLowerCase()}_${DateTime.now().millisecondsSinceEpoch}',
           name: file.name,
           filePath: filePath,
           fileExtension: file.extension ?? '',
+          vertices: vertices, // Store actual mesh vertices
           color: objectType == 'A'
               ? const Color3D(0, 0.5, 1) // Blue for Object A
               : const Color3D(1, 0.2, 0.8), // Pink for Object B

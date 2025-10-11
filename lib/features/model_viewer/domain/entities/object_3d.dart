@@ -13,6 +13,7 @@ class Object3D extends Equatable {
   final double opacity;
   final DateTime createdAt;
   final DateTime lastModified;
+  final List<Vector3>? vertices; // Actual mesh vertex data
 
   Object3D({
     required this.id,
@@ -26,6 +27,7 @@ class Object3D extends Equatable {
     this.opacity = 1.0,
     required this.createdAt,
     required this.lastModified,
+    this.vertices, // Optional - loaded from file
   }) : position = position ?? Vector3.zero(),
        rotation = rotation ?? Vector3.zero(),
        scale = scale ?? Vector3.all(1.0);
@@ -42,6 +44,7 @@ class Object3D extends Equatable {
     double? opacity,
     DateTime? createdAt,
     DateTime? lastModified,
+    List<Vector3>? vertices,
   }) {
     return Object3D(
       id: id ?? this.id,
@@ -55,11 +58,12 @@ class Object3D extends Equatable {
       opacity: opacity ?? this.opacity,
       createdAt: createdAt ?? this.createdAt,
       lastModified: lastModified ?? this.lastModified,
+      vertices: vertices ?? this.vertices,
     );
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
     id,
     name,
     filePath,
@@ -71,6 +75,8 @@ class Object3D extends Equatable {
     opacity,
     createdAt,
     lastModified,
+    // Note: vertices intentionally excluded from equality comparison
+    // for performance (can be huge lists)
   ];
 }
 
