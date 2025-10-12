@@ -110,16 +110,27 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
 
     if (isRenderableFormat && hasValidPath) {
       if (isMacOSDesktop) {
-        // Use native macOS 3D viewer for OBJ files
-        final ext = widget.object.fileExtension.toLowerCase();
-        if (ext == 'obj') {
+        // Use native macOS 3D viewer if vertices are available
+        final hasVertices =
+            widget.object.vertices != null &&
+            widget.object.vertices!.isNotEmpty;
+
+        debugPrint(
+          '🔵 DEBUG advanced_3d_viewer: isMacOSDesktop=$isMacOSDesktop, hasVertices=$hasVertices, vertexCount=${widget.object.vertices?.length ?? 0}',
+        );
+
+        if (hasVertices) {
+          debugPrint(
+            '🟢 DEBUG: Rendering MacOS3DViewer with ${widget.object.vertices!.length} vertices',
+          );
           return MacOS3DViewer(
             object: widget.object,
             backgroundColor: widget.backgroundColor,
           );
         }
-
-        // For GLB/GLTF, show informative message about OBJ conversion
+        
+        debugPrint('🔴 DEBUG: No vertices available, showing placeholder');
+        // For formats without vertex data, show informative message
         return Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -132,20 +143,21 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
             ),
           ),
           child: Center(
-            child: Container(
-              padding: const EdgeInsets.all(32),
-              margin: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.blue.withValues(alpha: 0.5),
-                  width: 2,
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(32),
+                margin: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.7),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.blue.withValues(alpha: 0.5),
+                    width: 2,
+                  ),
                 ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                   Icon(Icons.devices, size: 64, color: Colors.blue),
                   const SizedBox(height: 24),
                   Text(
@@ -178,8 +190,8 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'GLB/GLTF rendering requires WebView which is not available on macOS desktop. '
-                          'Convert to OBJ format for native 3D rendering.',
+                            'This file format requires WebView rendering which is not available on macOS desktop. '
+                            'The file may not have been parsed for vertex data.',
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.9),
                             fontSize: 14,
@@ -231,21 +243,21 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    '✅ GLB/GLTF: iOS, Android, Web',
+                      '✅ All formats with vertex data: macOS native rendering',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 12,
                     ),
                   ),
                   Text(
-                    '✅ OBJ: All platforms (including macOS)',
+                      '✅ GLB/GLTF textured rendering: iOS, Android, Web',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 12,
                     ),
                   ),
                   Text(
-                    '✅ Analysis: All platforms, all formats',
+                      '✅ Analysis features: All platforms, all formats',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 12,
@@ -253,6 +265,7 @@ class _Advanced3DViewerState extends State<Advanced3DViewer> {
                   ),
                 ],
               ),
+            ),
             ),
           ),
         );

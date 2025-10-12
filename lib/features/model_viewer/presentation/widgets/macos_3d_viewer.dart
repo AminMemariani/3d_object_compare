@@ -39,14 +39,21 @@ class _MacOS3DViewerState extends State<MacOS3DViewer> {
       _isLoading = true;
     });
 
+    debugPrint('🎨 MacOS3DViewer: Loading vertices for ${widget.object.name}');
+    debugPrint('   Vertex count: ${widget.object.vertices?.length ?? 0}');
+
     // Use vertices from object if available
     if (widget.object.vertices != null && widget.object.vertices!.isNotEmpty) {
+      debugPrint(
+        '   ✅ Vertices loaded successfully: ${widget.object.vertices!.length} vertices',
+      );
       setState(() {
         _vertices = widget.object.vertices;
         _isLoading = false;
       });
     } else {
       // No vertices available - show error
+      debugPrint('   ❌ No vertices available');
       setState(() {
         _vertices = null;
         _isLoading = false;
@@ -95,6 +102,10 @@ class _MacOS3DViewerState extends State<MacOS3DViewer> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+      '🎨 MacOS3DViewer.build: _isLoading=$_isLoading, hasVertices=${_vertices != null}, vertexCount=${_vertices?.length ?? 0}',
+    );
+    
     if (_isLoading) {
       return Container(
         color: widget.backgroundColor,

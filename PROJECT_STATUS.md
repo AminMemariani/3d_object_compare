@@ -162,7 +162,9 @@
 - `macos_3d_viewer.dart` - CustomPainter-based 3D renderer
 
 **Files Modified:**
-- `advanced_3d_viewer.dart` - Integrated macOS viewer
+- `advanced_3d_viewer.dart` - Integrated macOS viewer with vertex detection
+- `compare_view_page.dart` - Fixed background color for visibility
+- `superimposed_viewer_page.dart` - Fixed background color for visibility
 
 **Features:**
 - ✅ Point cloud rendering with perspective projection
@@ -170,15 +172,22 @@
 - ✅ Zoom control (scroll wheel)
 - ✅ Depth-based point sizing and alpha
 - ✅ Automatic model centering and normalization
-- ✅ Works with all formats that have vertex data
+- ✅ **Works with ALL formats**: OBJ, STL, GLTF, **GLB**
 - ✅ Vertex count display in UI
 - ✅ No external dependencies (pure Flutter/Dart)
+- ✅ Dark background for proper visibility
+
+**Bug Fixes:**
+- ✅ Fixed logic to check for vertices instead of file extension
+- ✅ Fixed background color causing objects to be invisible
+- ✅ Fixed RenderFlex overflow with ScrollView
 
 **Benefits:**
 - No more placeholder screens on macOS
 - Real 3D visualization without WebView
-- Consistent experience across all file formats
+- Consistent experience across all file formats (OBJ, STL, GLTF, GLB)
 - Lightweight and performant
+- Proper object visibility with contrasting backgrounds
 
 #### 2. Multi-Format Parser Implementation
 **Added support for GLB, STL, and GLTF vertex parsing**
@@ -357,22 +366,22 @@
 - ✅ iOS: Debug builds successful
 - ✅ Android: Debug and Release builds successful
 - ✅ Web: Builds and runs successfully
-- ⚠️ macOS: Builds but limited functionality (platform limitation)
+- ✅ macOS: Builds and runs with full 3D rendering support
 
 ---
 
 ## 📊 File Format Support Matrix
 
-| Format | Extension | Read Vertices | Binary Support | Web Support | Status |
-|--------|-----------|---------------|----------------|-------------|---------|
-| OBJ    | .obj      | ✅            | ❌             | ✅          | Complete |
-| STL    | .stl      | ✅            | ✅             | ✅          | Complete |
-| GLTF   | .gltf     | ✅            | Embedded       | ✅          | Complete |
-| GLB    | .glb      | ✅            | ✅             | ✅          | Complete |
-| FBX    | .fbx      | ❌            | ❌             | ❌          | Planned |
-| DAE    | .dae      | ❌            | ❌             | ❌          | Planned |
-| 3DS    | .3ds      | ❌            | ❌             | ❌          | Planned |
-| PLY    | .ply      | ❌            | ❌             | ❌          | Planned |
+| Format | Extension | Read Vertices | Binary Support | macOS Rendering | Web Support | Status |
+|--------|-----------|---------------|----------------|-----------------|-------------|---------|
+| OBJ    | .obj      | ✅            | ❌             | ✅ Native       | ✅          | Complete |
+| STL    | .stl      | ✅            | ✅             | ✅ Native       | ✅          | Complete |
+| GLTF   | .gltf     | ✅            | Embedded       | ✅ Native       | ✅          | Complete |
+| GLB    | .glb      | ✅            | ✅             | ✅ Native       | ✅          | Complete |
+| FBX    | .fbx      | ❌            | ❌             | ❌              | ❌          | Planned |
+| DAE    | .dae      | ❌            | ❌             | ❌              | ❌          | Planned |
+| 3DS    | .3ds      | ❌            | ❌             | ❌              | ❌          | Planned |
+| PLY    | .ply      | ❌            | ❌             | ❌              | ❌          | Planned |
 
 ---
 

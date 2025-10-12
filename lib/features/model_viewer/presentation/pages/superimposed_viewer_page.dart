@@ -253,12 +253,9 @@ class _SuperimposedViewerPageState extends State<SuperimposedViewerPage>
         borderRadius: BorderRadius.circular(18),
         child: Advanced3DViewer(
           object: object,
-          backgroundColor: Color.fromRGBO(
-            (object.color.red * 255).round(),
-            (object.color.green * 255).round(),
-            (object.color.blue * 255).round(),
-            1.0,
-          ),
+          backgroundColor: const Color(
+            0xFF1A1A1A,
+          ), // Dark gray background for visibility
           showControls: true,
           onPositionChanged: (position) {
             if (label == 'Object A') {
