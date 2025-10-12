@@ -5,10 +5,13 @@
 [![Dart](https://img.shields.io/badge/Dart-3.8.1-blue.svg)](https://dart.dev/)
 [![Tests](https://img.shields.io/badge/Tests-78%2F78%20passing-green.svg)](https://github.com/AminMemariani/3d_object_compare/actions)
 [![License](https://img.shields.io/badge/License-GPL%20v3.0-red.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20Mobile%20%7C%20Desktop-lightgrey.svg)](https://flutter.dev/)
+[![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20iOS%20%7C%20Android%20%7C%20Web-blue.svg)](https://flutter.dev/)
+[![Recommended](https://img.shields.io/badge/🍎%20Recommended-macOS-success.svg)](https://www.apple.com/macos/)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen.svg)](https://aminmemariani.github.io/3d_object_compare)
 
 A professional-grade Flutter application designed to help researchers, professionals, and developers in **geology**, **gaming**, and **medical fields** compare and analyze 3D objects with advanced Procrustes analysis. Built with clean architecture principles and supporting all major platforms.
+
+> 🍎 **Recommended Platform: macOS** - For optimal performance and full 3D rendering support with native point cloud visualization
 
 > 📋 **Project Progress**: See [PROJECT_STATUS.md](PROJECT_STATUS.md) for complete TODO list, recent updates, and development roadmap.
 
@@ -51,28 +54,13 @@ A professional-grade Flutter application designed to help researchers, professio
 - **Reset Controls**: Return objects to default positions
 - **Similarity Metrics Card**: Detailed breakdown of RMSE, standard deviation, and alignment quality
 - **Transform History**: Undo/redo capability for all transformations
-- **Export Analysis**: Save comparison results as JSON or CSV files
+- **Export Analysis**: Save comparison results as TXT files
 
 ### Scientific Analysis Tools
 - **Statistical Alignment**: Automatically align objects using Procrustes transformation
 - **Quantitative Metrics**: Precise measurements of shape differences and similarities
 - **Visual Comparison**: Side-by-side and overlaid viewing modes
 - **Data Export**: Export analysis results for further statistical processing
-- **Batch Processing**: Compare multiple objects efficiently
-
-### User Experience
-- **Tutorial System**: Interactive onboarding for new users
-- **Animated Transitions**: Smooth page transitions and UI animations
-- **Material 3 Design**: Modern, responsive user interface
-- **Dark/Light Themes**: Automatic theme switching
-- **Cross-platform**: Native support for Web, Desktop, and Mobile
-
-### Technical Features
-- **Clean Architecture**: MVVM pattern with dependency injection
-- **State Management**: Provider pattern with reactive updates
-- **Local Storage**: Isar database for preferences and data persistence
-- **Background Processing**: Isolate-based Procrustes analysis
-- **Extension System**: Plugin architecture for future enhancements
 
 ## Architecture
 
@@ -99,25 +87,6 @@ Each feature follows the clean architecture pattern:
 - **Presentation Layer**: UI components, pages, and providers
 - **Domain Layer**: Entities, repositories, and use cases
 - **Data Layer**: Data sources, models, and repository implementations
-
-## Dependencies
-
-### Core Dependencies
-- `provider`: State management
-- `isar`: Local database for user preferences
-- `equatable`: Value equality for entities
-- `dartz`: Functional programming utilities
-- `get_it`: Dependency injection
-
-### 3D Rendering
-- `model_viewer_plus`: 3D model viewing with AR support
-- `flutter_gl`: OpenGL rendering
-- `ar_flutter_plugin`: Augmented reality functionality
-
-### Utilities
-- `path_provider`: File system access
-- `shared_preferences`: Simple key-value storage
-
 ## 🌐 Live Demo
 
 **Try the app online**: [https://aminmemariani.github.io/3d_object_compare](https://aminmemariani.github.io/3d_object_compare)
@@ -141,16 +110,31 @@ For detailed deployment instructions, see [docs/README.md](docs/README.md).
 
 ## Getting Started
 
+### 🍎 Quick Start for macOS (Recommended)
+
+**For the best scientific analysis experience:**
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/AminMemariani/3d_object_compare.git
+cd 3d_object_compare
+
+# 2. Install dependencies
+flutter pub get
+
+# 3. Run on macOS
+flutter run -d macos
+
+# 4. Load your 3D models (OBJ, STL, GLTF, GLB)
+# 5. Run Procrustes Analysis
+# 6. Export complete results with logs
+```
+
+
 ### Prerequisites
 - Flutter SDK 3.32.6 or later
 - Dart SDK 3.8.1 or later
-- Platform-specific development tools:
-  - **Web**: No additional requirements
-  - **Android**: Android Studio, Android SDK
-  - **iOS**: Xcode, macOS
-  - **Windows**: Visual Studio with C++ tools
-  - **macOS**: Xcode
-  - **Linux**: CMake, Ninja, GTK development libraries
+
 
 ### Installation
 
@@ -177,19 +161,21 @@ flutter run
 
 ### Quick Start Guide
 
-1. **Load 3D Objects**: Tap "Load Object A" and "Load Object B" to select 3D files
+1. **Load 3D Objects**: Click "Load Object A" and "Load Object B" to select 3D files
    - **Supported formats**: OBJ, STL, GLB, GLTF
-   - For full 3D rendering: Use **.glb** or **.gltf** files
-   - For data analysis only: Use **.obj** or **.stl** files (shows placeholder)
+   - **On macOS** 🍎: All formats render natively with interactive 3D point clouds
+   - **On iOS/Android**: Full textured rendering with ModelViewer
+   - **On Web**: Point cloud rendering (requires hosted files for textures)
 2. **Navigate to Comparison View**: Automatically opens after loading both objects
-3. **View Alignment Score**: Real-time gauge shows how well objects are aligned
-4. **Transform Objects**: Use controls to manually adjust position/rotation/scale
-5. **Auto-Align**: Click "Auto Align" for instant alignment
-6. **Run Analysis**: Click "Run Procrustes Analysis" for statistical alignment
-7. **View Results**: Detailed metrics card appears with RMSE, similarity score, etc.
-8. **Export Results**: Save analysis results as JSON or CSV files
+3. **View Scientific Metrics**: Min Distance and Standard Deviation displayed after analysis
+4. **Transform Objects**: Use on-screen controls to manually adjust position/rotation/scale
+5. **Run Analysis**: Click "Run Procrustes Analysis" for statistical alignment
+6. **View Results**: Detailed metrics card with minimum distance, std deviation, RMSE, and transformation matrix
+7. **Export Results**: Save complete analysis report with logs as TXT file (includes all processing logs)
 
-> **💡 Tip**: For the best visual experience, use GLB or GLTF files. See the [Supported File Formats](#supported-file-formats) section for conversion tools.
+> **🍎 Recommended**: For the best scientific analysis experience, **run on macOS** which provides native rendering for all formats without WebView dependencies.
+
+> **💡 Format Tip**: All formats (OBJ, STL, GLTF, GLB) work great on macOS with native rendering. For other platforms, GLB or GLTF provide the best visual experience.
 
 ### Use Case Examples
 
@@ -219,25 +205,30 @@ flutter run
 
 ### Platform-Specific Setup
 
-#### Android
-- Minimum SDK version: 21 (Android 5.0)
-- Target SDK version: 34
-- Permissions: Camera, Storage access
 
 #### iOS
 - Minimum iOS version: 12.0
 - ARKit support for AR features
 - Permissions: Camera, Photo Library access
+- Full textured rendering with ModelViewer
+
+#### Android
+- Minimum SDK version: 21 (Android 5.0)
+- Target SDK version: 34
+- Permissions: Camera, Storage access
+- Full textured rendering with ModelViewer
 
 #### Web
 - Modern web browser with WebGL support
 - HTTPS required for AR features
 - Progressive Web App (PWA) support
+- Requires hosted files (not local)
 
-#### Desktop (Windows, macOS, Linux)
+#### Desktop (Windows, Linux)
 - Windows 10 or later
-- macOS 10.14 or later
 - Ubuntu 18.04+ or equivalent Linux distribution
+- Point cloud rendering for vertex data
+- Use web version for textured models
 
 ## 📊 Usage & Workflows
 
@@ -489,14 +480,14 @@ This tool implements **Generalized Procrustes Analysis (GPA)**, a statistical me
 
 **Platform Support for 3D Rendering:**
 
-| Platform | GLB/GLTF Rendering | Recommendation |
-|----------|-------------------|----------------|
-| **Web (Chrome, Firefox, Safari)** | ✅ Full Support | Requires hosted files (not local) |
-| **iOS (iPhone, iPad)** | ✅ Full Support | Local files supported |
-| **Android** | ✅ Full Support | Local files supported |
-| **macOS Desktop** | ⚠️ Limited | Use web version: `flutter run -d chrome` |
-| **Windows Desktop** | ⚠️ Limited | Use web version recommended |
-| **Linux Desktop** | ⚠️ Limited | Use web version recommended |
+| Platform | Native Rendering | Textured Rendering | Recommendation |
+|----------|-----------------|-------------------|----------------|
+| **macOS Desktop** 🍎 | ✅ Full Support | Point Cloud | **RECOMMENDED** - Best performance |
+| **iOS (iPhone, iPad)** | ✅ Full Support | ✅ Full Support | Excellent for mobile |
+| **Android** | ✅ Full Support | ✅ Full Support | Excellent for mobile |
+| **Web (Chrome, Firefox, Safari)** | ✅ Full Support | ✅ Full Support | Requires hosted files |
+| **Windows Desktop** | ⚠️ Point Cloud | ⚠️ Limited | Use web version |
+| **Linux Desktop** | ⚠️ Point Cloud | ⚠️ Limited | Use web version |
 
 **Features:**
 - ✅ Full 3D visualization with textures and materials
@@ -507,28 +498,32 @@ This tool implements **Generalized Procrustes Analysis (GPA)**, a statistical me
 - ✅ Cross-platform compatibility
 
 **Platform-Specific Notes:**
-- **macOS Desktop**: Due to WebView limitations in `model_viewer_plus`, 3D rendering is not available. Use `flutter run -d chrome` for full rendering capabilities.
+- **macOS Desktop** 🍎 **(RECOMMENDED)**: Native 3D point cloud rendering using CustomPainter for all formats (OBJ, STL, GLTF, GLB). Features interactive rotation, zoom controls, and excellent performance. No WebView dependency required. Works perfectly with local files.
+- **Mobile (iOS/Android)**: Full support with local file loading and WebView-based rendering for textured models.
 - **Web Platform**: Requires files to be hosted on a server or use data URLs. Local file system access is restricted for security.
-- **Mobile (iOS/Android)**: Full support with local file loading and WebView-based rendering.
+- **Windows/Linux Desktop**: Point cloud rendering available for formats with vertex data. Use web version for textured rendering.
 
-#### 📐 Data Analysis Only (OBJ/STL)
-**Supported for Analysis:**
-- **.obj**: Wavefront OBJ format (common in 3D modeling and scientific applications)
-- **.stl**: Stereolithography format (standard in 3D printing and medical imaging)
+#### 📐 All Formats Fully Supported
 
-**Features:**
-- ✅ File loading and metadata extraction
-- ✅ Transform controls (position, rotation, scale)
-- ✅ Procrustes analysis and comparison
-- ✅ Data export (JSON, CSV)
-- ⚠️ **No real-time 3D rendering** - Shows informative placeholder with file details
+**All file formats now support 3D rendering and analysis:**
+- **.obj**: Wavefront OBJ format - ✅ Native rendering on macOS, iOS, Android
+- **.stl**: Stereolithography format - ✅ Native rendering on macOS, iOS, Android
+- **.gltf**: GL Transmission Format - ✅ Native rendering on all platforms
+- **.glb**: GL Binary Format - ✅ Native rendering on all platforms
 
-**Why No Real-Time Rendering?**
-OBJ and STL files are text-based formats that require conversion to GLB/GLTF for WebGL rendering. The placeholder view provides:
-- File information and metadata
-- Transform controls for data manipulation
-- Visual indicators of file status
-- Full support for analysis operations
+**Features on macOS (Recommended Platform):**
+- ✅ **Full 3D point cloud rendering** for all formats
+- ✅ Interactive rotation (mouse drag) and zoom (scroll wheel)
+- ✅ Perspective-based depth visualization
+- ✅ Procrustes analysis with scientific metrics
+- ✅ Complete log capture and TXT export
+- ✅ Local file loading (no hosting required)
+- ✅ Excellent performance with large models
+
+**Features on Other Platforms:**
+- **iOS/Android**: Full textured rendering for GLB/GLTF, point cloud for OBJ/STL
+- **Web**: Point cloud rendering for all formats, textured rendering requires hosted files
+- **Windows/Linux**: Point cloud rendering available
 
 #### 🔄 Converting OBJ/STL to GLB
 
@@ -572,4 +567,4 @@ Plans to add support for:
 
 ---
 
-**3D Object Comparison Tool** - Professional scientific analysis platform for geology, gaming, and medical applications with advanced Procrustes analysis.
+**3D Object Comparison Tool** - Professional scientific analysis platform for geology, gaming, and medical applications with advanced Procrustes analysis. **Best experienced on macOS** with native 3D rendering for all file formats.

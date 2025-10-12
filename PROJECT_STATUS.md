@@ -2,7 +2,8 @@
 
 > **Last Updated:** October 11, 2025  
 > **Status:** Active Development  
-> **Version:** 1.0.0+1
+> **Version:** 1.0.0+1  
+> **🍎 Recommended Platform:** macOS - Native 3D rendering for all formats
 
 ---
 
@@ -25,14 +26,17 @@
 - Flutter 3.8.1+
 - Dart
 - Vector Math
-- Model Viewer Plus
+- CustomPainter (macOS native rendering)
+- Model Viewer Plus (mobile platforms)
 - Provider State Management
 
 **Supported Platforms:**
+- ✅ **macOS** 🍎 (Recommended - Full native rendering)
 - ✅ iOS
 - ✅ Android  
 - ✅ Web (Chrome, Firefox, Safari)
-- ⚠️ macOS (limited 3D rendering)
+- ✅ Windows (Point cloud rendering)
+- ✅ Linux (Point cloud rendering)
 
 ---
 
