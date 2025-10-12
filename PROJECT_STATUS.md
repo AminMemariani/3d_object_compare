@@ -117,9 +117,12 @@
 - [x] Transformation parameters display
 - [x] JSON export functionality
 - [x] CSV export functionality
+- [x] **TXT export with complete logs** (new!)
 - [x] Share/save exported files
 - [x] Timestamp tracking
 - [x] Metric visualization
+- [x] Complete processing log capture
+- [x] Platform-specific file handling
 
 #### UI/UX Features
 - [x] Modern Material Design 3
@@ -189,11 +192,39 @@
 - Lightweight and performant
 - Proper object visibility with contrasting backgrounds
 
-#### 2. Scientific Metrics Display Enhancement
+#### 2. TXT Export with Complete Logs
+**Implemented comprehensive text export functionality**
+
+**Files Created:**
+- `comparison_logger.dart` - Singleton logger to capture all comparison operations
+- `txt_export_service.dart` - TXT export service with logs and analysis results
+
+**Files Modified:**
+- `compare_view_page.dart` - Implemented actual export functionality
+- `object_loader_provider.dart` - Integrated logging for all operations
+
+**Features:**
+- ✅ Comprehensive TXT format export
+- ✅ Captures all processing logs (parsing, analysis, errors)
+- ✅ Includes complete object information
+- ✅ Includes Procrustes analysis results with full precision
+- ✅ Includes transformation matrices
+- ✅ Timestamps for all log entries
+- ✅ Platform-specific file saving and sharing
+- ✅ Queue-based log storage (max 1000 entries)
+
+**Export Content:**
+- Object details (name, format, vertex count, transforms, colors)
+- Scientific metrics (min distance, std dev, RMSE)
+- Transformation parameters (translation, rotation matrix, scale)
+- Complete processing logs with timestamps
+- Platform and generation information
+
+#### 3. Scientific Metrics Display Enhancement
 **Replaced percentage-based similarity with scientific metrics**
 
 **Files Modified:**
-- `compare_view_page.dart` - Updated alignment gauge to show min distance & std deviation
+- `compare_view_page.dart` - Updated alignment gauge, removed unused buttons and cards
 - `superimposed_viewer_page.dart` - Updated alignment badge with scientific metrics
 - `superimposed_viewer_mvvm_page.dart` - Updated MVVM version consistently
 - `export_service.dart` - Reordered CSV to prioritize scientific metrics

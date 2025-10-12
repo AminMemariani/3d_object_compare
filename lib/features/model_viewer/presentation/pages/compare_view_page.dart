@@ -4,6 +4,7 @@ import '../providers/object_loader_provider.dart';
 import '../widgets/advanced_3d_viewer.dart';
 import '../widgets/procrustes_results_card.dart';
 import '../../domain/entities/object_3d.dart';
+import '../../domain/services/txt_export_service.dart';
 
 class CompareViewPage extends StatefulWidget {
   const CompareViewPage({super.key});
@@ -747,30 +748,79 @@ class _CompareViewPageState extends State<CompareViewPage>
     }
   }
 
-  void _exportComparison(ObjectLoaderProvider objectProvider) {
-    // TODO: Implement actual export functionality
-    final metrics = objectProvider.getSimilarityMetrics();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.download_rounded, color: Colors.white, size: 20),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                metrics != null
-                    ? 'Comparison data exported (RMSE: ${metrics.rootMeanSquareError.toStringAsFixed(4)})'
-                    : 'Comparison exported',
-              ),
-            ),
-          ],
+  Future<void> _exportComparison(ObjectLoaderProvider objectProvider) async {
+    if (objectProvider.objectA == null || objectProvider.objectB == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.warning_rounded, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              const Expanded(child: Text('Load both objects before exporting')),
+            ],
+          ),
+          backgroundColor: Colors.orange,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
-        backgroundColor: Colors.orange,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        duration: const Duration(seconds: 3),
-      ),
-    );
+      );
+      return;
+    }
+
+    try {
+      await TxtExportService.saveAndShareTxt(
+        objectA: objectProvider.objectA!,
+        objectB: objectProvider.objectB!,
+        procrustesResult: objectProvider.procrustesResult,
+        includeLogs: true,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  objectProvider.procrustesResult != null
+                      ? 'Report exported with analysis results'
+                      : 'Report exported (run analysis for metrics)',
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              Expanded(child: Text('Export failed: $e')),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+    }
   }
 }

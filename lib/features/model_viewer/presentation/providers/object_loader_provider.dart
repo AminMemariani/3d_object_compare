@@ -6,6 +6,7 @@ import '../../domain/entities/procrustes_result.dart';
 import '../../domain/services/procrustes.dart';
 import '../../domain/services/procrustes_isolate_service.dart';
 import '../../domain/services/implementations/model_parser_factory.dart';
+import '../../domain/services/comparison_logger.dart';
 
 class ObjectLoaderProvider extends ChangeNotifier {
   Object3D? _objectA;
@@ -18,6 +19,12 @@ class ObjectLoaderProvider extends ChangeNotifier {
   bool _isAnalyzing = false;
   double _analysisProgress = 0.0;
   bool _showResultsCard = false;
+  final _logger = ComparisonLogger();
+
+  void _logAndPrint(String message) {
+    print(message);
+    _logger.log(message);
+  }
 
   // Getters
   Object3D? get objectA => _objectA;
@@ -81,7 +88,9 @@ class ObjectLoaderProvider extends ChangeNotifier {
 
         if (ModelParserFactory.isExtensionSupported(extension)) {
           try {
-            print('📐 Parsing ${extension.toUpperCase()} file: ${file.name}');
+            _logAndPrint(
+              '📐 Parsing ${extension.toUpperCase()} file: ${file.name}',
+            );
             vertices = await ModelParserFactory.parseFile(
               fileExtension: extension,
               filePath: kIsWeb ? null : filePath,
@@ -90,19 +99,21 @@ class ObjectLoaderProvider extends ChangeNotifier {
             );
 
             if (vertices.isNotEmpty) {
-              print('✅ Loaded ${vertices.length} vertices from ${file.name}');
+              _logAndPrint(
+                '✅ Loaded ${vertices.length} vertices from ${file.name}',
+              );
             } else {
-              print(
+              _logAndPrint(
                 '⚠️ No vertices found in ${extension.toUpperCase()} file, using placeholder',
               );
             }
           } catch (e) {
-            print(
+            _logAndPrint(
               '⚠️ Error parsing ${extension.toUpperCase()} file: $e - using placeholder vertices',
             );
           }
         } else {
-          print(
+          _logAndPrint(
             '⚠️ Unsupported file format: $extension - using placeholder vertices',
           );
         }
@@ -340,6 +351,14 @@ class ObjectLoaderProvider extends ChangeNotifier {
   Future<void> performProcrustesAnalysis() async {
     if (_objectA == null || _objectB == null) return;
 
+    _logAndPrint('🔬 Starting Procrustes Analysis');
+    _logAndPrint(
+      '   Object A: ${_objectA!.name} (${_objectA!.vertices?.length ?? 0} vertices)',
+    );
+    _logAndPrint(
+      '   Object B: ${_objectB!.name} (${_objectB!.vertices?.length ?? 0} vertices)',
+    );
+
     _isAnalyzing = true;
     _analysisProgress = 0.0;
     _showResultsCard = false;
@@ -358,6 +377,17 @@ class ObjectLoaderProvider extends ChangeNotifier {
 
       // Apply the optimal transformation to Object B
       if (_procrustesResult != null) {
+        _logAndPrint('✅ Procrustes Analysis Complete');
+        _logAndPrint(
+          '   Min Distance: ${_procrustesResult!.minimumDistance.toStringAsFixed(6)}',
+        );
+        _logAndPrint(
+          '   Std Deviation: ${_procrustesResult!.standardDeviation.toStringAsFixed(6)}',
+        );
+        _logAndPrint(
+          '   RMSE: ${_procrustesResult!.rootMeanSquareError.toStringAsFixed(6)}',
+        );
+        
         _objectB = Procrustes.applyTransformation(
           _objectB!,
           _procrustesResult!,
@@ -366,6 +396,7 @@ class ObjectLoaderProvider extends ChangeNotifier {
         _showResultsCard = true;
       }
     } catch (e) {
+      _logAndPrint('❌ Procrustes analysis failed: $e');
       _setError('Procrustes analysis failed: $e');
     } finally {
       _isAnalyzing = false;
