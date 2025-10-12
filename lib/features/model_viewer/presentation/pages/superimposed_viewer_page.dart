@@ -289,36 +289,92 @@ class _SuperimposedViewerPageState extends State<SuperimposedViewerPage>
     BuildContext context,
     ObjectLoaderProvider provider,
   ) {
-    final alignmentScore = provider.getAlignmentScore();
+    final metrics = provider.getSimilarityMetrics();
+
+    if (metrics == null) {
+      // Show hint to run analysis
+      return Positioned(
+        top: 16,
+        right: 16,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.grey.withValues(alpha: 0.8),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.analytics_rounded, color: Colors.white, size: 16),
+              const SizedBox(width: 4),
+              Text(
+                'Run Analysis',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Show scientific metrics
+    final rmse = metrics.rootMeanSquareError;
+    final qualityColor = rmse <= 0.1
+        ? Colors.green
+        : rmse <= 0.5
+        ? Colors.orange
+        : Colors.red;
+
     return Positioned(
       top: 16,
       right: 16,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: alignmentScore > 80
-              ? Colors.green.withValues(alpha: 0.9)
-              : alignmentScore > 50
-              ? Colors.orange.withValues(alpha: 0.9)
-              : Colors.red.withValues(alpha: 0.9),
+          color: qualityColor.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              alignmentScore > 80 ? Icons.check_circle : Icons.warning,
-              color: Colors.white,
-              size: 16,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.straighten_rounded, color: Colors.white, size: 14),
+                const SizedBox(width: 4),
+                Text(
+                  'Min: ${metrics.minimumDistance.toStringAsFixed(3)}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 4),
-            Text(
-              'Alignment: ${alignmentScore.toStringAsFixed(0)}%',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
+            const SizedBox(height: 1),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.show_chart_rounded, color: Colors.white, size: 14),
+                const SizedBox(width: 4),
+                Text(
+                  'Std: ${metrics.standardDeviation.toStringAsFixed(3)}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ],
             ),
           ],
         ),

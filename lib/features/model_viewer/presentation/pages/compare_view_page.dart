@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../providers/object_loader_provider.dart';
 import '../widgets/advanced_3d_viewer.dart';
 import '../widgets/procrustes_results_card.dart';
-import '../widgets/similarity_gauge.dart';
 import '../../domain/entities/object_3d.dart';
 
 class CompareViewPage extends StatefulWidget {
@@ -160,9 +159,14 @@ class _CompareViewPageState extends State<CompareViewPage>
                         'Object A',
                         Colors.blue,
                       )
-                    : _buildPlaceholderView(context, 'Object A', Colors.blue, () {
+                    : _buildPlaceholderView(
+                        context,
+                        'Object A',
+                        Colors.blue,
+                        () {
                           objectProvider.loadObjectA();
-                      }),
+                        },
+                      ),
               ),
               const SizedBox(width: 16),
               // Object B View
@@ -174,9 +178,14 @@ class _CompareViewPageState extends State<CompareViewPage>
                         'Object B',
                         Colors.purple,
                       )
-                    : _buildPlaceholderView(context, 'Object B', Colors.purple, () {
+                    : _buildPlaceholderView(
+                        context,
+                        'Object B',
+                        Colors.purple,
+                        () {
                           objectProvider.loadObjectB();
-                      }),
+                        },
+                      ),
               ),
             ],
           ),
@@ -197,16 +206,16 @@ class _CompareViewPageState extends State<CompareViewPage>
           const SizedBox(height: 24),
           Text(
             'No Objects to Compare',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
             'Load 3D objects to start side-by-side comparison',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
           ),
           const SizedBox(height: 32),
           Row(
@@ -270,10 +279,7 @@ class _CompareViewPageState extends State<CompareViewPage>
             const SizedBox(height: 8),
             Text(
               'No object loaded',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
             const SizedBox(height: 24),
             FilledButton.icon(
@@ -298,7 +304,7 @@ class _CompareViewPageState extends State<CompareViewPage>
       context,
       listen: false,
     );
-    
+
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -436,7 +442,7 @@ class _CompareViewPageState extends State<CompareViewPage>
                 ),
               ),
               const SizedBox(height: 20),
-              
+
               // Alignment Score Gauge
               if (objectProvider.hasObjectA && objectProvider.hasObjectB)
                 _buildAlignmentScoreGauge(context, objectProvider),
@@ -492,7 +498,7 @@ class _CompareViewPageState extends State<CompareViewPage>
                 ],
               ),
               const SizedBox(height: 16),
-              
+
               // Object Info Cards
               Row(
                 children: [
@@ -623,7 +629,39 @@ class _CompareViewPageState extends State<CompareViewPage>
     BuildContext context,
     ObjectLoaderProvider objectProvider,
   ) {
-    final score = objectProvider.getAlignmentScore();
+    final metrics = objectProvider.getSimilarityMetrics();
+
+    if (metrics == null) {
+      // Show simple position-based alignment when no Procrustes analysis available
+      objectProvider.getAlignmentScore();
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            Text(
+              'Position Alignment',
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Run analysis for scientific metrics',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Show scientific metrics from Procrustes analysis
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -631,21 +669,81 @@ class _CompareViewPageState extends State<CompareViewPage>
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Alignment Score',
+            'Scientific Metrics',
             style: Theme.of(
               context,
             ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 12),
-          SimilarityGauge(score: score, size: 80),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _buildMetricCard(
+                  context,
+                  'Min Distance',
+                  metrics.minimumDistance,
+                  Icons.straighten_rounded,
+                  Colors.blue,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildMetricCard(
+                  context,
+                  'Std Deviation',
+                  metrics.standardDeviation,
+                  Icons.show_chart_rounded,
+                  Colors.purple,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMetricCard(
+    BuildContext context,
+    String label,
+    double value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color, size: 16),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 10,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
           Text(
-            '${score.toStringAsFixed(1)}%',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            value.toStringAsFixed(4),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: _getScoreColor(score),
+              color: color,
+              fontFamily: 'monospace',
+              fontSize: 14,
             ),
           ),
         ],
@@ -692,13 +790,6 @@ class _CompareViewPageState extends State<CompareViewPage>
         ],
       ),
     );
-  }
-
-  Color _getScoreColor(double score) {
-    if (score >= 80) return Colors.green;
-    if (score >= 60) return Colors.lightGreen;
-    if (score >= 40) return Colors.orange;
-    return Colors.red;
   }
 
   Future<void> _runProcrustesAnalysis(
@@ -776,7 +867,7 @@ class _CompareViewPageState extends State<CompareViewPage>
 
   void _resetObjectB(ObjectLoaderProvider objectProvider) {
     objectProvider.resetObjectB();
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Row(
@@ -796,7 +887,7 @@ class _CompareViewPageState extends State<CompareViewPage>
   void _exportComparison(ObjectLoaderProvider objectProvider) {
     // TODO: Implement actual export functionality
     final metrics = objectProvider.getSimilarityMetrics();
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -820,4 +911,3 @@ class _CompareViewPageState extends State<CompareViewPage>
     );
   }
 }
-
