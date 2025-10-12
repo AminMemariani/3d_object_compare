@@ -466,64 +466,12 @@ class _CompareViewPageState extends State<CompareViewPage>
               if (objectProvider.hasObjectA && objectProvider.hasObjectB)
                 const SizedBox(height: 16),
 
-              // Control Buttons Row
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildControlButton(
-                      context,
-                      'Auto Align',
-                      Icons.auto_fix_high_rounded,
-                      () => _autoAlign(objectProvider),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildControlButton(
-                      context,
-                      'Reset',
-                      Icons.refresh_rounded,
-                      () => _resetObjectB(objectProvider),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildControlButton(
-                      context,
-                      'Export',
-                      Icons.download_rounded,
-                      () => _exportComparison(objectProvider),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Object Info Cards
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildInfoCard(
-                      context,
-                      'Object A',
-                      objectProvider.hasObjectA
-                          ? objectProvider.objectA!.name
-                          : 'Not loaded',
-                      Colors.blue,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildInfoCard(
-                      context,
-                      'Object B',
-                      objectProvider.hasObjectB
-                          ? objectProvider.objectB!.name
-                          : 'Not loaded',
-                      Colors.purple,
-                    ),
-                  ),
-                ],
+              // Control Button
+              _buildControlButton(
+                context,
+                'Export Results',
+                Icons.download_rounded,
+                () => _exportComparison(objectProvider),
               ),
 
               // Procrustes Results Card
@@ -584,43 +532,6 @@ class _CompareViewPageState extends State<CompareViewPage>
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildInfoCard(
-    BuildContext context,
-    String title,
-    String subtitle,
-    Color accentColor,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: accentColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: accentColor.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: accentColor,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -834,54 +745,6 @@ class _CompareViewPageState extends State<CompareViewPage>
         ),
       );
     }
-  }
-
-  void _autoAlign(ObjectLoaderProvider objectProvider) {
-    final scoreBefore = objectProvider.getAlignmentScore();
-    objectProvider.autoAlignObjectB();
-    final scoreAfter = objectProvider.getAlignmentScore();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(
-              Icons.auto_fix_high_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Auto-aligned: ${scoreBefore.toStringAsFixed(1)}% → ${scoreAfter.toStringAsFixed(1)}%',
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
-  }
-
-  void _resetObjectB(ObjectLoaderProvider objectProvider) {
-    objectProvider.resetObjectB();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Row(
-          children: [
-            Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
-            SizedBox(width: 8),
-            Text('Object B reset to default'),
-          ],
-        ),
-        backgroundColor: Colors.blue,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
   }
 
   void _exportComparison(ObjectLoaderProvider objectProvider) {

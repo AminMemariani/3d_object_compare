@@ -62,12 +62,9 @@ class ExportService {
     csvBuffer.writeln('Generated: ${result.computedAt.toIso8601String()}');
     csvBuffer.writeln();
 
-    // Analysis Results
-    csvBuffer.writeln('Analysis Results');
+    // Analysis Results - Primary Scientific Metrics
+    csvBuffer.writeln('Analysis Results - Primary Metrics');
     csvBuffer.writeln('Metric,Value');
-    csvBuffer.writeln(
-      'Similarity Score,${result.similarityScore.toStringAsFixed(2)}%',
-    );
     csvBuffer.writeln(
       'Minimum Distance,${result.minimumDistance.toStringAsFixed(6)}',
     );
@@ -78,6 +75,9 @@ class ExportService {
       'Root Mean Square Error,${result.rootMeanSquareError.toStringAsFixed(6)}',
     );
     csvBuffer.writeln('Number of Points,${result.numberOfPoints}');
+    csvBuffer.writeln(
+      'Similarity Score (legacy),${result.similarityScore.toStringAsFixed(2)}',
+    );
     csvBuffer.writeln();
 
     // Transformation Parameters

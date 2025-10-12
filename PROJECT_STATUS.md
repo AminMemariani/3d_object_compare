@@ -189,7 +189,37 @@
 - Lightweight and performant
 - Proper object visibility with contrasting backgrounds
 
-#### 2. Multi-Format Parser Implementation
+#### 2. Scientific Metrics Display Enhancement
+**Replaced percentage-based similarity with scientific metrics**
+
+**Files Modified:**
+- `compare_view_page.dart` - Updated alignment gauge to show min distance & std deviation
+- `superimposed_viewer_page.dart` - Updated alignment badge with scientific metrics
+- `superimposed_viewer_mvvm_page.dart` - Updated MVVM version consistently
+- `export_service.dart` - Reordered CSV to prioritize scientific metrics
+- `export_service_impl.dart` - Updated export implementation
+
+**Changes:**
+- ✅ Removed percentage-based similarity gauge
+- ✅ Added Min Distance card (blue, 4 decimals)
+- ✅ Added Std Deviation card (purple, 4 decimals)
+- ✅ Updated alignment badges to show both metrics
+- ✅ Color-coded by RMSE quality (green/orange/red)
+- ✅ CSV export prioritizes scientific metrics
+- ✅ Percentage kept as "legacy" in exports
+- ✅ Removed Auto Align and Reset buttons from compare page
+- ✅ Removed duplicate object name cards from footer
+- ✅ Simplified UI to focus on analysis and export
+- ✅ Removed unused _buildInfoCard, _autoAlign, _resetObjectB methods
+
+**Benefits:**
+- More scientifically accurate representation
+- Standard metrics used in research papers
+- Easier to compare with published studies
+- Professional scientific appearance
+- Backward compatible CSV export
+
+#### 3. Multi-Format Parser Implementation
 **Added support for GLB, STL, and GLTF vertex parsing**
 
 **Files Created:**
