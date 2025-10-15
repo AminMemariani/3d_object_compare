@@ -135,33 +135,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
           ],
         ),
-        Row(
-          children: [
-            TutorialButton(
-              onPressed: () {
-                context.read<TutorialProvider>().startTutorial();
-              },
-            ),
-            const SizedBox(width: 8),
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.settings_rounded),
-                onPressed: () => Navigator.of(context).pushNamed('/settings'),
-                style: IconButton.styleFrom(padding: const EdgeInsets.all(12)),
-              ),
-            ),
-          ],
+        TutorialButton(
+          onPressed: () {
+            context.read<TutorialProvider>().startTutorial();
+          },
         ),
       ],
     );
@@ -296,12 +273,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _buildActionButton(
-                context,
-                'Settings',
-                Icons.settings_rounded,
-                () => Navigator.of(context).pushNamed('/settings'),
-              ),
+              child: Container(), // Empty space to maintain layout
             ),
           ],
         ),
