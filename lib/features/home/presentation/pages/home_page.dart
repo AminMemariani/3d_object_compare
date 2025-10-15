@@ -285,31 +285,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             Expanded(
               child: _buildActionButton(
                 context,
-                '3D Viewer',
-                Icons.view_in_ar_rounded,
-                () => _open3DViewer(context),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildActionButton(
-                context,
                 'Compare',
                 Icons.compare_arrows_rounded,
-                () => _openCompareView(context),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _buildActionButton(
-                context,
-                'Superimposed',
-                Icons.layers_rounded,
-                () => _openSuperimposedViewer(context),
+                // Disable compare until both objects are loaded
+                (Provider.of<ObjectLoaderProvider>(context).hasObjectA &&
+                        Provider.of<ObjectLoaderProvider>(context).hasObjectB)
+                    ? () => _openCompareView(context)
+                    : null,
               ),
             ),
             const SizedBox(width: 12),
@@ -323,30 +305,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
           ],
         ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _buildActionButton(
-                context,
-                'MVVM Demo',
-                Icons.architecture_rounded,
-                () => Navigator.of(
-                  context,
-                ).pushNamed('/superimposed-viewer-mvvm'),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildActionButton(
-                context,
-                'Legacy',
-                Icons.history_rounded,
-                () => _openSuperimposedViewer(context),
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }
@@ -355,8 +313,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     BuildContext context,
     String label,
     IconData icon,
-    VoidCallback onTap,
+    VoidCallback? onTap,
   ) {
+    final bool isEnabled = onTap != null;
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -376,21 +335,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           borderRadius: BorderRadius.circular(16),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-            child: Column(
-              children: [
-                Icon(
-                  icon,
-                  size: 24,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  label,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                ),
-              ],
+            child: Opacity(
+              opacity: isEnabled ? 1.0 : 0.5,
+              child: Column(
+                children: [
+                  Icon(
+                    icon,
+                    size: 24,
+                    color: isEnabled
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.4),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    label,
+                    style: Theme.of(context,
+                    ).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: isEnabled
+                          ? Theme.of(context).colorScheme.onSurface
+                          : Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -538,16 +510,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  void _open3DViewer(BuildContext context) {
-    Navigator.of(context).pushNamed('/model-viewer');
-  }
-
   void _openCompareView(BuildContext context) {
     Navigator.of(context).pushNamed('/compare-view');
-  }
-
-  void _openSuperimposedViewer(BuildContext context) {
-    Navigator.of(context).pushNamed('/superimposed-viewer');
   }
 
   void _showSuccessMessage(BuildContext context, String message) {

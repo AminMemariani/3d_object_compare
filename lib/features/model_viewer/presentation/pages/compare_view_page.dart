@@ -93,7 +93,14 @@ class _CompareViewPageState extends State<CompareViewPage>
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              // Reset both objects when going back
+              Provider.of<ObjectLoaderProvider>(
+                context,
+                listen: false,
+              ).clearAll();
+              Navigator.of(context).pop();
+            },
             style: IconButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.surface,
             ),
