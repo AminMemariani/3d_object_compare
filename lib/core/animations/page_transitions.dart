@@ -210,7 +210,7 @@ class PageTransitions {
           alignment: Alignment.center,
           transform: Matrix4.identity()
             ..rotateZ(rotation)
-            ..scaleByDouble(scale),
+            ..scale(scale),
           child: child,
         );
       },
