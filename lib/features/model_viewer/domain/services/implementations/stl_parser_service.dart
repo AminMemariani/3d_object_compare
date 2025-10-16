@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:vector_math/vector_math_64.dart';
 import 'model_parser_interface.dart';
 
@@ -47,14 +47,18 @@ class StlParserService implements ModelParserInterface {
       }
 
       if (vertices.isEmpty) {
-        print('⚠️ No vertices found in STL file: ${fileName ?? filePath ?? "unknown"}');
+        debugPrint(
+          '⚠️ No vertices found in STL file: ${fileName ?? filePath ?? "unknown"}',
+        );
         return [];
       }
 
-      print('✅ Parsed STL file (${isAscii ? "ASCII" : "Binary"}): ${vertices.length} vertices');
+      debugPrint(
+        '✅ Parsed STL file (${isAscii ? "ASCII" : "Binary"}): ${vertices.length} vertices',
+      );
       return vertices;
     } catch (e) {
-      print('❌ Error parsing STL file: $e');
+      debugPrint('❌ Error parsing STL file: $e');
       return [];
     }
   }

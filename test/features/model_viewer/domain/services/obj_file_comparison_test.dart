@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:flutter_3d_app/features/model_viewer/domain/services/procrustes_analysis.dart';
@@ -16,33 +17,39 @@ void main() {
     });
 
     test('Test 1: Compare skull with itself - should have ~100% similarity', () {
-      print('\n=== TEST 1: Skull vs Itself ===');
-      print('Total vertices: ${skull1Vertices.length}');
+      debugPrint('\n=== TEST 1: Skull vs Itself ===');
+      debugPrint('Total vertices: ${skull1Vertices.length}');
 
       // Sample vertices for performance (use every 10th vertex)
       final sampledVertices = sampleVertices(skull1Vertices, 500);
-      print('Sampled vertices: ${sampledVertices.length}');
+      debugPrint('Sampled vertices: ${sampledVertices.length}');
 
       // Perform Procrustes analysis
       final stopwatch = Stopwatch()..start();
       final result = ProcrustesAnalysis.align(sampledVertices, sampledVertices);
       stopwatch.stop();
 
-      print('\n--- Results ---');
-      print('Similarity Score: ${result.similarityScore.toStringAsFixed(2)}%');
-      print('RMSE: ${result.rootMeanSquareError.toStringAsExponential(4)}');
-      print('Min Distance: ${result.minimumDistance.toStringAsExponential(4)}');
-      print(
+      debugPrint('\n--- Results ---');
+      debugPrint(
+        'Similarity Score: ${result.similarityScore.toStringAsFixed(2)}%',
+      );
+      debugPrint(
+        'RMSE: ${result.rootMeanSquareError.toStringAsExponential(4)}',
+      );
+      debugPrint(
+        'Min Distance: ${result.minimumDistance.toStringAsExponential(4)}',
+      );
+      debugPrint(
         'Standard Deviation: ${result.standardDeviation.toStringAsExponential(4)}',
       );
-      print('Number of Points: ${result.numberOfPoints}');
-      print('Computation Time: ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint('Number of Points: ${result.numberOfPoints}');
+      debugPrint('Computation Time: ${stopwatch.elapsedMilliseconds}ms');
 
       // Print transformation (should be identity-like)
-      print('\n--- Transformation ---');
-      print('Translation: ${result.translation}');
-      print('Scale: ${result.scale.toStringAsFixed(6)}');
-      print(
+      debugPrint('\n--- Transformation ---');
+      debugPrint('Translation: ${result.translation}');
+      debugPrint('Scale: ${result.scale.toStringAsFixed(6)}');
+      debugPrint(
         'Rotation Matrix Determinant: ${result.rotation.determinant().toStringAsFixed(6)}',
       );
 
@@ -69,13 +76,13 @@ void main() {
         reason: 'Rotation should have positive determinant',
       );
 
-      print('\n✓ TEST 1 PASSED: Identical objects correctly identified');
+      debugPrint('\n✓ TEST 1 PASSED: Identical objects correctly identified');
     });
 
     test('Test 2: Compare skull obj1 with skull obj2 - different skulls', () {
-      print('\n=== TEST 2: Skull obj1 vs Skull obj2 ===');
-      print('Skull 1 vertices: ${skull1Vertices.length}');
-      print('Skull 2 vertices: ${skull2Vertices.length}');
+      debugPrint('\n=== TEST 2: Skull obj1 vs Skull obj2 ===');
+      debugPrint('Skull 1 vertices: ${skull1Vertices.length}');
+      debugPrint('Skull 2 vertices: ${skull2Vertices.length}');
 
       // Sample vertices to make them comparable
       final targetSampleSize = math.min(
@@ -85,44 +92,46 @@ void main() {
       final sampledSkull1 = sampleVertices(skull1Vertices, targetSampleSize);
       final sampledSkull2 = sampleVertices(skull2Vertices, targetSampleSize);
 
-      print('Sampled Skull 1: ${sampledSkull1.length} vertices');
-      print('Sampled Skull 2: ${sampledSkull2.length} vertices');
+      debugPrint('Sampled Skull 1: ${sampledSkull1.length} vertices');
+      debugPrint('Sampled Skull 2: ${sampledSkull2.length} vertices');
 
       // Get bounding box info
       final bbox1 = computeBoundingBox(sampledSkull1);
       final bbox2 = computeBoundingBox(sampledSkull2);
 
-      print('\n--- Bounding Box Info ---');
-      print('Skull 1 - Min: ${bbox1['min']}, Max: ${bbox1['max']}');
-      print('Skull 1 - Size: ${bbox1['size']}');
-      print('Skull 2 - Min: ${bbox2['min']}, Max: ${bbox2['max']}');
-      print('Skull 2 - Size: ${bbox2['size']}');
+      debugPrint('\n--- Bounding Box Info ---');
+      debugPrint('Skull 1 - Min: ${bbox1['min']}, Max: ${bbox1['max']}');
+      debugPrint('Skull 1 - Size: ${bbox1['size']}');
+      debugPrint('Skull 2 - Min: ${bbox2['min']}, Max: ${bbox2['max']}');
+      debugPrint('Skull 2 - Size: ${bbox2['size']}');
 
       // Perform Procrustes analysis
       final stopwatch = Stopwatch()..start();
       final result = ProcrustesAnalysis.align(sampledSkull1, sampledSkull2);
       stopwatch.stop();
 
-      print('\n--- Results ---');
-      print('Similarity Score: ${result.similarityScore.toStringAsFixed(2)}%');
-      print('RMSE: ${result.rootMeanSquareError.toStringAsFixed(6)}');
-      print('Min Distance: ${result.minimumDistance.toStringAsFixed(6)}');
-      print(
+      debugPrint('\n--- Results ---');
+      debugPrint(
+        'Similarity Score: ${result.similarityScore.toStringAsFixed(2)}%',
+      );
+      debugPrint('RMSE: ${result.rootMeanSquareError.toStringAsFixed(6)}');
+      debugPrint('Min Distance: ${result.minimumDistance.toStringAsFixed(6)}');
+      debugPrint(
         'Standard Deviation: ${result.standardDeviation.toStringAsFixed(6)}',
       );
-      print('Number of Points: ${result.numberOfPoints}');
-      print('Computation Time: ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint('Number of Points: ${result.numberOfPoints}');
+      debugPrint('Computation Time: ${stopwatch.elapsedMilliseconds}ms');
 
       // Print transformation
-      print('\n--- Transformation ---');
-      print('Translation: ${result.translation}');
-      print('Scale: ${result.scale.toStringAsFixed(6)}');
-      print(
+      debugPrint('\n--- Transformation ---');
+      debugPrint('Translation: ${result.translation}');
+      debugPrint('Scale: ${result.scale.toStringAsFixed(6)}');
+      debugPrint(
         'Rotation Matrix Determinant: ${result.rotation.determinant().toStringAsFixed(6)}',
       );
-      print('Rotation Matrix:');
+      debugPrint('Rotation Matrix:');
       for (int i = 0; i < 3; i++) {
-        print(
+        debugPrint(
           '  [${result.rotation.entry(i, 0).toStringAsFixed(4)}, '
           '${result.rotation.entry(i, 1).toStringAsFixed(4)}, '
           '${result.rotation.entry(i, 2).toStringAsFixed(4)}]',
@@ -153,24 +162,28 @@ void main() {
       );
 
       // Interpretation
-      print('\n--- Interpretation ---');
+      debugPrint('\n--- Interpretation ---');
       if (result.similarityScore > 90) {
-        print('Very high similarity - These skulls are very similar in shape');
+        debugPrint(
+          'Very high similarity - These skulls are very similar in shape',
+        );
       } else if (result.similarityScore > 70) {
-        print(
+        debugPrint(
           'High similarity - These skulls share significant structural features',
         );
       } else if (result.similarityScore > 50) {
-        print('Moderate similarity - These skulls have some common features');
+        debugPrint(
+          'Moderate similarity - These skulls have some common features',
+        );
       } else {
-        print('Low similarity - These skulls are quite different');
+        debugPrint('Low similarity - These skulls are quite different');
       }
 
-      print('\n✓ TEST 2 PASSED: Different objects successfully compared');
+      debugPrint('\n✓ TEST 2 PASSED: Different objects successfully compared');
     });
 
     test('Test 3: Compare normalized skulls (scale-invariant)', () {
-      print('\n=== TEST 3: Normalized Comparison ===');
+      debugPrint('\n=== TEST 3: Normalized Comparison ===');
 
       // Sample and normalize both skulls
       final sampledSkull1 = sampleVertices(skull1Vertices, 500);
@@ -179,7 +192,9 @@ void main() {
       final normalizedSkull1 = normalizePointSet(sampledSkull1);
       final normalizedSkull2 = normalizePointSet(sampledSkull2);
 
-      print('Normalized ${normalizedSkull1.length} vertices from each skull');
+      debugPrint(
+        'Normalized ${normalizedSkull1.length} vertices from each skull',
+      );
 
       // Perform analysis
       final stopwatch = Stopwatch()..start();
@@ -189,13 +204,15 @@ void main() {
       );
       stopwatch.stop();
 
-      print('\n--- Results (Scale-Invariant) ---');
-      print('Similarity Score: ${result.similarityScore.toStringAsFixed(2)}%');
-      print('RMSE: ${result.rootMeanSquareError.toStringAsFixed(6)}');
-      print('Min Distance: ${result.minimumDistance.toStringAsFixed(6)}');
-      print('Computation Time: ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint('\n--- Results (Scale-Invariant) ---');
+      debugPrint(
+        'Similarity Score: ${result.similarityScore.toStringAsFixed(2)}%',
+      );
+      debugPrint('RMSE: ${result.rootMeanSquareError.toStringAsFixed(6)}');
+      debugPrint('Min Distance: ${result.minimumDistance.toStringAsFixed(6)}');
+      debugPrint('Computation Time: ${stopwatch.elapsedMilliseconds}ms');
 
-      print('\n✓ TEST 3 PASSED: Scale-invariant comparison completed');
+      debugPrint('\n✓ TEST 3 PASSED: Scale-invariant comparison completed');
     });
   });
 }

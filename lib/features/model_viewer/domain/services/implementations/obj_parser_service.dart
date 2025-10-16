@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:vector_math/vector_math_64.dart';
 import 'model_parser_interface.dart';
 
@@ -55,14 +55,16 @@ class ObjParserService implements ModelParserInterface {
       }
 
       if (vertices.isEmpty) {
-        print('⚠️ No vertices found in OBJ file: ${fileName ?? "unknown"}');
+        debugPrint(
+          '⚠️ No vertices found in OBJ file: ${fileName ?? "unknown"}',
+        );
         return [];
       }
 
-      print('✅ Parsed OBJ file: ${vertices.length} vertices');
+      debugPrint('✅ Parsed OBJ file: ${vertices.length} vertices');
       return vertices;
     } catch (e) {
-      print('❌ Error parsing OBJ from bytes: $e');
+      debugPrint('❌ Error parsing OBJ from bytes: $e');
       return [];
     }
   }
@@ -104,14 +106,14 @@ class ObjParserService implements ModelParserInterface {
       }
 
       if (vertices.isEmpty) {
-        print('⚠️ No vertices found in OBJ file: $filePath');
+        debugPrint('⚠️ No vertices found in OBJ file: $filePath');
         return [];
       }
 
-      print('✅ Parsed OBJ file: ${vertices.length} vertices');
+      debugPrint('✅ Parsed OBJ file: ${vertices.length} vertices');
       return vertices;
     } catch (e) {
-      print('❌ Error parsing OBJ file: $e');
+      debugPrint('❌ Error parsing OBJ file: $e');
       return [];
     }
   }
@@ -132,7 +134,7 @@ class ObjParserService implements ModelParserInterface {
       }
     }
 
-    print('📊 Sampled ${sampled.length} vertices from ${vertices.length}');
+    debugPrint('📊 Sampled ${sampled.length} vertices from ${vertices.length}');
     return sampled;
   }
 

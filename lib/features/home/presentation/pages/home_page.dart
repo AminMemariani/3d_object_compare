@@ -377,7 +377,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Future<void> _loadObjectA(BuildContext context) async {
     // DIAGNOSTIC: Verify button click is working
-    print('🔴 DEBUG: _loadObjectA called - button click IS working!');
+    debugPrint('🔴 DEBUG: _loadObjectA called - button click IS working!');
     debugPrint('🔴 DEBUG: _loadObjectA called - button click IS working!');
 
     final objectProvider = Provider.of<ObjectLoaderProvider>(
@@ -409,9 +409,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
 
-    print('🔴 DEBUG: About to call objectProvider.loadObjectA()');
+    debugPrint('🔴 DEBUG: About to call objectProvider.loadObjectA()');
     await objectProvider.loadObjectA();
-    print('🔴 DEBUG: objectProvider.loadObjectA() returned');
+    debugPrint('🔴 DEBUG: objectProvider.loadObjectA() returned');
 
     if (!mounted) return;
 
@@ -419,15 +419,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     ScaffoldMessenger.of(context).clearSnackBars();
 
     if (objectProvider.error != null) {
-      print('🔴 DEBUG: Error occurred: ${objectProvider.error}');
+      debugPrint('🔴 DEBUG: Error occurred: ${objectProvider.error}');
       _showErrorMessage(context, objectProvider.error!);
     } else if (objectProvider.hasObjectA) {
-      print('🔴 DEBUG: Object A loaded successfully');
+      debugPrint('🔴 DEBUG: Object A loaded successfully');
       _showSuccessMessage(context, 'Object A loaded successfully!');
       // Navigate to viewer to show the object
       Navigator.of(context).pushNamed('/compare-view');
     } else {
-      print('🔴 DEBUG: No object loaded, no error - user cancelled');
+      debugPrint('🔴 DEBUG: No object loaded, no error - user cancelled');
       // User cancelled file picker - show subtle message
       _showInfoMessage(context, 'File selection cancelled');
     }

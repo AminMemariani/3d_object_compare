@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:vector_math/vector_math_64.dart';
 import 'model_parser_interface.dart';
 
@@ -35,14 +35,16 @@ class GltfParserService implements ModelParserInterface {
       final vertices = await _parseGltfJson(jsonContent, filePath);
 
       if (vertices.isEmpty) {
-        print('⚠️ No vertices found in GLTF file: ${fileName ?? filePath ?? "unknown"}');
+        debugPrint(
+          '⚠️ No vertices found in GLTF file: ${fileName ?? filePath ?? "unknown"}',
+        );
         return [];
       }
 
-      print('✅ Parsed GLTF file: ${vertices.length} vertices');
+      debugPrint('✅ Parsed GLTF file: ${vertices.length} vertices');
       return vertices;
     } catch (e) {
-      print('❌ Error parsing GLTF file: $e');
+      debugPrint('❌ Error parsing GLTF file: $e');
       return [];
     }
   }
@@ -61,7 +63,9 @@ class GltfParserService implements ModelParserInterface {
       final meshes = gltf['meshes'] as List<dynamic>?;
       
       if (meshes == null || accessors == null || bufferViews == null) {
-        print('⚠️ GLTF missing required structures (meshes, accessors, or bufferViews)');
+        debugPrint(
+          '⚠️ GLTF missing required structures (meshes, accessors, or bufferViews)',
+        );
         return vertices;
       }
 
@@ -165,10 +169,10 @@ class GltfParserService implements ModelParserInterface {
         }
       } else {
         // For other component types, we'd need more complex handling
-        print('⚠️ Unsupported GLTF component type: $componentType');
+        debugPrint('⚠️ Unsupported GLTF component type: $componentType');
       }
     } catch (e) {
-      print('⚠️ Error extracting vertices from accessor: $e');
+      debugPrint('⚠️ Error extracting vertices from accessor: $e');
     }
     
     return vertices;

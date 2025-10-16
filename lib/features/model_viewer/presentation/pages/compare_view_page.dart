@@ -258,13 +258,13 @@ class _CompareViewPageState extends State<CompareViewPage>
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
           width: 2,
           strokeAlign: BorderSide.strokeAlignInside,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -274,7 +274,11 @@ class _CompareViewPageState extends State<CompareViewPage>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.upload_rounded, size: 48, color: color.withOpacity(0.5)),
+            Icon(
+              Icons.upload_rounded,
+              size: 48,
+              color: color.withValues(alpha: 0.5),
+            ),
             const SizedBox(height: 16),
             Text(
               label,

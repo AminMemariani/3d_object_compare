@@ -105,7 +105,7 @@ class ExtensionRegistry {
   /// Gets extensions that implement a specific interface
   static List<T> getExtensionsImplementing<T extends Object>() {
     return _extensions.values
-        .where((service) => service is T)
+        .whereType<T>()
         .cast<T>()
         .toList();
   }

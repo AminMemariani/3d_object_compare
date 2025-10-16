@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import '../database/database.dart';
@@ -48,7 +48,9 @@ Future<void> init() async {
   } catch (e) {
     // If database initialization fails (e.g., on web), skip user preferences
     if (kIsWeb) {
-      print('Warning: Database initialization failed on web, skipping user preferences: $e');
+      debugPrint(
+        'Warning: Database initialization failed on web, skipping user preferences: $e',
+      );
     } else {
       rethrow;
     }

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:vector_math/vector_math_64.dart';
 import 'model_parser_interface.dart';
 
@@ -44,14 +44,16 @@ class GlbParserService implements ModelParserInterface {
       final vertices = _parseGlbBinary(bytes);
 
       if (vertices.isEmpty) {
-        print('⚠️ No vertices found in GLB file: ${fileName ?? filePath ?? "unknown"}');
+        debugPrint(
+          '⚠️ No vertices found in GLB file: ${fileName ?? filePath ?? "unknown"}',
+        );
         return [];
       }
 
-      print('✅ Parsed GLB file: ${vertices.length} vertices');
+      debugPrint('✅ Parsed GLB file: ${vertices.length} vertices');
       return vertices;
     } catch (e) {
-      print('❌ Error parsing GLB file: $e');
+      debugPrint('❌ Error parsing GLB file: $e');
       return [];
     }
   }
@@ -139,7 +141,9 @@ class GlbParserService implements ModelParserInterface {
       final meshes = gltf['meshes'] as List<dynamic>?;
       
       if (meshes == null || accessors == null || bufferViews == null) {
-        print('⚠️ GLB missing required structures (meshes, accessors, or bufferViews)');
+        debugPrint(
+          '⚠️ GLB missing required structures (meshes, accessors, or bufferViews)',
+        );
         return vertices;
       }
 
@@ -231,10 +235,10 @@ class GlbParserService implements ModelParserInterface {
         }
       } else {
         // For other component types, we'd need more complex handling
-        print('⚠️ Unsupported GLB component type: $componentType');
+        debugPrint('⚠️ Unsupported GLB component type: $componentType');
       }
     } catch (e) {
-      print('⚠️ Error extracting vertices from accessor: $e');
+      debugPrint('⚠️ Error extracting vertices from accessor: $e');
     }
     
     return vertices;

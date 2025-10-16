@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:vector_math/vector_math_64.dart';
 import 'model_parser_interface.dart';
 import 'obj_parser_service.dart';
@@ -45,14 +46,16 @@ class ModelParserFactory {
         final sampleSize = ModelParserInterface.getRecommendedSampleSize(vertices.length);
         if (vertices.length > sampleSize) {
           final sampledVertices = ModelParserInterface.sampleVertices(vertices, sampleSize);
-          print('📊 Sampled ${sampledVertices.length} vertices from ${vertices.length} for performance');
+          debugPrint(
+            '📊 Sampled ${sampledVertices.length} vertices from ${vertices.length} for performance',
+          );
           return sampledVertices;
         }
       }
 
       return vertices;
     } catch (e) {
-      print('❌ Error parsing ${fileExtension.toUpperCase()} file: $e');
+      debugPrint('❌ Error parsing ${fileExtension.toUpperCase()} file: $e');
       return [];
     }
   }
