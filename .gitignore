@@ -44,3 +44,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 GITHUB_PAGES_SETUP.md
+CREATE_GITHUB_RELEASE_STEPS.md
+
+# DMG and installation files (too large for Git)
+*.dmg
+DMG_INSTALLATION_GUIDE.md
