@@ -11,9 +11,9 @@ void main() {
     late List<Vector3> skull2Vertices;
 
     setUp(() async {
-      // Parse OBJ files from data directory
-      skull1Vertices = await parseObjFile('data/obj1/skull.obj');
-      skull2Vertices = await parseObjFile('data/obj2/12140_Skull_v3_L2.obj');
+      // Parse OBJ files from assets directory
+      skull1Vertices = await parseObjFile('assets/data/obj1/skull.obj');
+      skull2Vertices = await parseObjFile('assets/data/obj2/12140_Skull_v3_L2.obj');
     });
 
     test('Test 1: Compare skull with itself - should have ~100% similarity', () {
@@ -53,11 +53,16 @@ void main() {
         'Rotation Matrix Determinant: ${result.rotation.determinant().toStringAsFixed(6)}',
       );
 
-      // Assertions
+      // Assertions - Updated for scientific metrics
       expect(
-        result.similarityScore,
-        greaterThan(95.0),
-        reason: 'Same object should have >95% similarity',
+        result.minimumDistance,
+        lessThan(0.1),
+        reason: 'Min distance should be small for identical objects',
+      );
+      expect(
+        result.standardDeviation,
+        lessThan(0.1),
+        reason: 'Standard deviation should be small for identical objects',
       );
       expect(
         result.rootMeanSquareError,
@@ -138,16 +143,16 @@ void main() {
         );
       }
 
-      // Assertions
+      // Assertions - Updated for scientific metrics
       expect(
-        result.similarityScore,
-        lessThan(100.0),
-        reason: 'Different objects should have <100% similarity',
+        result.minimumDistance,
+        greaterThan(0.0),
+        reason: 'Different objects should have positive min distance',
       );
       expect(
-        result.similarityScore,
+        result.standardDeviation,
         greaterThan(0.0),
-        reason: 'Similarity should be positive',
+        reason: 'Different objects should have positive standard deviation',
       );
       expect(
         result.rootMeanSquareError,
@@ -161,17 +166,17 @@ void main() {
         reason: 'Rotation should have positive determinant',
       );
 
-      // Interpretation
+      // Interpretation - Updated for scientific metrics
       debugPrint('\n--- Interpretation ---');
-      if (result.similarityScore > 90) {
+      if (result.minimumDistance < 0.1 && result.standardDeviation < 0.1) {
         debugPrint(
           'Very high similarity - These skulls are very similar in shape',
         );
-      } else if (result.similarityScore > 70) {
+      } else if (result.minimumDistance < 0.5 && result.standardDeviation < 0.5) {
         debugPrint(
           'High similarity - These skulls share significant structural features',
         );
-      } else if (result.similarityScore > 50) {
+      } else if (result.minimumDistance < 1.0 && result.standardDeviation < 1.0) {
         debugPrint(
           'Moderate similarity - These skulls have some common features',
         );
@@ -210,7 +215,25 @@ void main() {
       );
       debugPrint('RMSE: ${result.rootMeanSquareError.toStringAsFixed(6)}');
       debugPrint('Min Distance: ${result.minimumDistance.toStringAsFixed(6)}');
+      debugPrint('Standard Deviation: ${result.standardDeviation.toStringAsFixed(6)}');
       debugPrint('Computation Time: ${stopwatch.elapsedMilliseconds}ms');
+
+      // Assertions for normalized comparison
+      expect(
+        result.minimumDistance,
+        greaterThan(0.0),
+        reason: 'Normalized objects should have positive min distance',
+      );
+      expect(
+        result.standardDeviation,
+        greaterThan(0.0),
+        reason: 'Normalized objects should have positive standard deviation',
+      );
+      expect(
+        result.rootMeanSquareError,
+        greaterThan(0.0),
+        reason: 'Normalized objects should have non-zero RMSE',
+      );
 
       debugPrint('\n✓ TEST 3 PASSED: Scale-invariant comparison completed');
     });
