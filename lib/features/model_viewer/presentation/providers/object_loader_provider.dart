@@ -22,7 +22,7 @@ class ObjectLoaderProvider extends ChangeNotifier {
   final _logger = ComparisonLogger();
 
   void _logAndPrint(String message) {
-    print(message);
+    debugPrint(message);
     _logger.log(message);
   }
 

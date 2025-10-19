@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:vector_math/vector_math_64.dart';
 import '../entities/procrustes_result.dart';
 import '../entities/object_3d.dart';
@@ -22,11 +23,11 @@ class Procrustes {
         ? objectB.vertices!
         : _generateObjectPoints(objectB);
 
-    print('🔬 Procrustes Analysis:');
-    print(
+    debugPrint('🔬 Procrustes Analysis:');
+    debugPrint(
       '   Object A: ${pointsA.length} vertices ${objectA.vertices != null ? "(real mesh data)" : "(placeholder cube)"}',
     );
-    print(
+    debugPrint(
       '   Object B: ${pointsB.length} vertices ${objectB.vertices != null ? "(real mesh data)" : "(placeholder cube)"}',
     );
 
@@ -102,9 +103,9 @@ class Procrustes {
   static List<Vector3> _generateObjectPoints(Object3D object) {
     final points = <Vector3>[];
 
-    print('⚠️ WARNING: Using placeholder cube vertices for ${object.name}');
-    print('   This will NOT give accurate comparison results!');
-    print('   Use OBJ files for proper analysis.');
+    debugPrint('⚠️ WARNING: Using placeholder cube vertices for ${object.name}');
+    debugPrint('   This will NOT give accurate comparison results!');
+    debugPrint('   Use OBJ files for proper analysis.');
 
     // Generate a simple geometric shape (cube) as a placeholder
     final vertices = [
