@@ -15,6 +15,12 @@ A professional-grade Flutter application designed to help researchers, professio
 
 > 📋 **Project Progress**: See [PROJECT_STATUS.md](PROJECT_STATUS.md) for complete TODO list, recent updates, and development roadmap.
 
+## 🎥 How it works (Video)
+
+Watch a short walkthrough of the app in action:
+
+- **How the app works**: [View the video](https://private-user-images.githubusercontent.com/18459313/503179172-867b7e4f-e968-4274-837a-420b9f104e28.mp4?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjA5NTg3OTIsIm5iZiI6MTc2MDk1ODQ5MiwicGF0aCI6Ii8xODQ1OTMxMy81MDMxNzkxNzItODY3YjdlNGYtZTk2OC00Mjc0LTgzN2EtNDIwYjlmMTA0ZTI4Lm1wND9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTEwMjAlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUxMDIwVDExMDgxMlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWViYjc5NmI0ZGYwODQ4Y2IxZmMxMjk5MmYwYzQ0YTc2ZTA0MDYzMTRmYmM3MjVkYzVlNGYwYjk1ZTBlNDU0MTgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.O1LIodtB0kZA7Ac0jIBdVIk3Maq0s71H5zzOtecmbcs)
+
 ## 🎯 Purpose & Applications
 
 ### Geology & Earth Sciences
